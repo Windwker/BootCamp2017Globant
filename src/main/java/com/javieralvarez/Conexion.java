@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.swing.JOptionPane;
+
 public class Conexion {
 
 	private static Conexion instance;
@@ -86,5 +88,9 @@ public class Conexion {
 		}
 		return instance;
 	}
+	
+
+	
+	
 
 }

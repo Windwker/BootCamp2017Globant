@@ -66,12 +66,14 @@ public class Forecast {
 
 		
 		try {
-			Connection con = Conexion.getInstance().getConexion();
+			Conexion.getInstance();
+			Connection con = Conexion.getConexion();
 			Statement st = con.createStatement();
 			PreparedStatement ps = null;
 			ResultSet rs;
 
-			rs = st.executeQuery("SELECT date FROM WeatherGlobant.Weather WHERE type='FC'");
+			rs = st.executeQuery("SELECT date FROM WeatherGlobant.Weather WHE"
+					+ "RE type='FC'");
 
 			sql = 0;
 
@@ -180,6 +182,10 @@ public class Forecast {
 
 	public void setLow(float low) {
 		this.low = low;
+	}
+	
+	public Date getDate(){
+		return date;
 	}
 
 }
