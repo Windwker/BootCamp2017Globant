@@ -48,14 +48,8 @@ public class ConexionTest extends TestCase {
 		 Assert.assertEquals(createTable, Conexion.getCreateTable());
 	}
 	
-	public void testCreaConSinGetInstance(){
-		try{
-		Assert.assertNull(Conexion.getConexion());
-		}catch(Exception e){
-			e.getMessage();
-			
-		}
-	}
+
+	
 	
 	public void testCreaConGetInstance(){
 		Conexion.getInstance();
