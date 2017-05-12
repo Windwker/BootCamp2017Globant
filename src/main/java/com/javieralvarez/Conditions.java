@@ -14,10 +14,10 @@ import java.util.Scanner;
 
 public class Conditions {
 
-	private DateFormat df = new SimpleDateFormat("dd/MM/YYYY");
-	private Date date ;
-	private String dateToString;
-	private String dayDescription;
+	private static  DateFormat df = new SimpleDateFormat("dd/MM/YYYY");
+	private static Date date ;
+	private static String dateToString;
+	private static String dayDescription;
 	private float temp;
 	private float chill;
 	private float windSpeed;
@@ -29,7 +29,7 @@ public class Conditions {
 	private Scanner sc ;
 	private int error=0;
 	private int sql;
-	private Calendar c = Calendar.getInstance();
+	private static Calendar c = Calendar.getInstance();
 
 	public Conditions() {
 
@@ -173,7 +173,7 @@ catch(Exception e){
 	
 	
 	
-	public String getDateToString(int i) {
+	public static String getDateToString(int i) {
 		Date d = new Date();
 		c.setTime(d);
 		c.add(Calendar.DATE, i);
@@ -187,18 +187,18 @@ catch(Exception e){
 	
 	
 	
-	public void setDayDescription(String dayDescription) {
-		this.dayDescription = dayDescription;
+	public static void setDayDescription(String dayDesc) {
+		dayDescription = dayDesc;
 	}
 
 
 	public void setDate(){
 		
 	 
-	 this.date= new Date();
+	 Conditions.date= new Date();
 	}
 	
-	public String getDateToString(){
+	public static String getDateToString(){
 		
 		dateToString = df.format(date);
 		return dateToString;

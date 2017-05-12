@@ -12,8 +12,10 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class Forecast {
+////////////////////////////////////////FORECAST////////////////////////////////////////
+	
 	private Calendar c = Calendar.getInstance();
-	// private static Forecast instance;
+	
 	private String text;
 	private Date date;
 	private float high, low;
@@ -60,13 +62,9 @@ public class Forecast {
 			}while(error==1);
 		}
 
-/*		for (int i = 0; i < lista.size(); i++) {
-			System.out.println(lista.get(i).getDateToString(i + 1) + " " + lista.get(i).getDayDescription() + " "
-					+ lista.get(i).getLow() + " " + lista.get(i).getHigh());
-		}*/
 
-		//////////////////////////////////////// FORECAST
-		//////////////////////////////////////// ///////////////////////////////////////////////////////////////
+
+		
 		try {
 			Connection con = Conexion.getInstance().getConexion();
 			Statement st = con.createStatement();
