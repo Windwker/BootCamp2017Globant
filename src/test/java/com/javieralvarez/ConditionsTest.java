@@ -6,6 +6,8 @@ package com.javieralvarez;
 
 import java.util.InputMismatchException;
 
+import com.javieralvarez.clases.Conditions;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

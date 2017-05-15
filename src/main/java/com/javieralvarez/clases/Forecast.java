@@ -1,4 +1,4 @@
-package com.javieralvarez;
+package com.javieralvarez.clases;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,14 +12,14 @@ import java.util.Date;
 import java.util.Scanner;
 
 public class Forecast {
-////////////////////////////////////////FORECAST////////////////////////////////////////
-	
+	//////////////////////////////////////// FORECAST////////////////////////////////////////
+
 	private Calendar c = Calendar.getInstance();
-	
+
 	private String text;
 	private Date date;
 	private float high, low;
-	private String dateToString;
+
 	private Scanner sc;
 	private String dayDescription;
 	private ArrayList<Forecast> lista = new ArrayList<Forecast>();
@@ -40,32 +40,29 @@ public class Forecast {
 	public void setForecastConditions() {
 
 		for (int i = 1; i < 6; i++) {
-			do{
-			try {
-				error=0;
-				sc = new Scanner(System.in);
-				System.out.println("\n*Configurar Forecast*");
-				System.out.println("Condiciones para dia: " + getNextDay(i));
-				date = getNextDay(i);
-				System.out.println("Ingrese descripcion del clima: ");
-				dayDescription = sc.next();
-				System.out.println("Ingrese minima: ");
-				low = sc.nextFloat();
-				System.out.println("Ingrese maxima: ");
-				high = sc.nextFloat();
+			do {
+				try {
+					error = 0;
+					sc = new Scanner(System.in);
+					System.out.println("\n*Configurar Forecast*");
+					System.out.println("Condiciones para dia: " + getNextDay(i));
+					date = getNextDay(i);
+					System.out.println("Ingrese descripcion del clima: ");
+					dayDescription = sc.next();
+					System.out.println("Ingrese minima: ");
+					low = sc.nextFloat();
+					System.out.println("Ingrese maxima: ");
+					high = sc.nextFloat();
 
-				lista.add(new Forecast(date, dayDescription, low, high));
+					lista.add(new Forecast(date, dayDescription, low, high));
 
-			} catch (Exception e) {
-				System.out.println("Error. Ingrese valores correctamente");
-				error=1;
-			}
-			}while(error==1);
+				} catch (Exception e) {
+					System.out.println("Error. Ingrese valores correctamente");
+					error = 1;
+				}
+			} while (error == 1);
 		}
 
-
-
-		
 		try {
 			Conexion.getInstance();
 			Connection con = Conexion.getConexion();
@@ -74,23 +71,22 @@ public class Forecast {
 			ResultSet rs;
 			ResultSet rs2;
 			rs = st.executeQuery("SELECT ID from WEATHERGLOBANT.CURRENTCONDITIONS");
-			
-			
-			while(rs.next()){
+
+			while (rs.next()) {
 				id = rs.getInt(1);
 			}
-			
+
 			rs2 = st.executeQuery("SELECT DATE FROM WEATHERGLOBANT.FORECAST");
-			
+
 			sql = 0;
 
 			for (int i = 0; i < lista.size(); i++) {
 
 				while (rs2.next() && sql != 1) {
 					Date dia = new java.sql.Date(getNextDay(i + 1).getTime());
-					Date d2 =rs2.getDate(1);
+					Date d2 = rs2.getDate(1);
 					SimpleDateFormat df = new SimpleDateFormat("DDMMYYYY");
-					
+
 					if (df.format(dia).equals(df.format(rs2.getDate(1)))) {
 						sql = 1;
 						System.out.println("Se hace update del Forecast");
@@ -107,7 +103,7 @@ public class Forecast {
 					ps = con.prepareStatement(
 							"UPDATE WEATHERGLOBANT.FORECAST SET id=?,date=?,description=?, low=?, high=? WHERE date =?");
 					Date d1 = getNextDay((i + 1));
-					ps.setDate(6, new java.sql.Date(lista.get(i).getDate().getTime())  );
+					ps.setDate(6, new java.sql.Date(lista.get(i).getDate().getTime()));
 				}
 				ps.setInt(1, id);
 				ps.setDate(2, new java.sql.Date(lista.get(i).getNextDay((i + 1)).getTime()));
@@ -132,13 +128,15 @@ public class Forecast {
 			Connection con = Conexion.getConexion();
 			Statement st = con.createStatement();
 			PreparedStatement ps = null;
-			ResultSet rs = st.executeQuery("SELECT date, description, low, high FROM WeatherGlobant.FORECAST WHERE ID='"+id+"'");
+			ResultSet rs = st.executeQuery(
+					"SELECT date, description, low, high FROM WeatherGlobant.FORECAST WHERE ID='" + id + "'");
 			System.out.println("\nClima para los proximos 5 dias:");
 			System.out.println("");
-			while(rs.next()){
-				
-				System.out.println(rs.getDate(1)+" "+rs.getString(2)+" "+"Min: " +rs.getFloat(3)+" "+"Max: "+rs.getFloat(4));
-				
+			while (rs.next()) {
+
+				System.out.println(rs.getDate(1) + " " + rs.getString(2) + " " + "Min: " + rs.getFloat(3) + " "
+						+ "Max: " + rs.getFloat(4));
+
 			}
 
 		} catch (Exception e) {
@@ -153,7 +151,7 @@ public class Forecast {
 		c.setTime(d1);
 		c.add(Calendar.DATE, i);
 		d = c.getTime();
-		
+
 		return d;
 
 	}
@@ -188,8 +186,8 @@ public class Forecast {
 	public void setLow(float low) {
 		this.low = low;
 	}
-	
-	public Date getDate(){
+
+	public Date getDate() {
 		return date;
 	}
 

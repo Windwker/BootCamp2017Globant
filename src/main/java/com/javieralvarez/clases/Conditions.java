@@ -1,4 +1,4 @@
-package com.javieralvarez;
+package com.javieralvarez.clases;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,9 +13,8 @@ import java.util.Scanner;
 
 public class Conditions {
 
-	private static DateFormat df = new SimpleDateFormat("dd/MM/YYYY");
+	
 	private Date date;
-	private static String dateToString;
 	private static String dayDescription;
 	private float temp;
 	private float chill;
@@ -29,8 +28,6 @@ public class Conditions {
 	private int error = 0;
 	private int sql;
 	private static Calendar c = Calendar.getInstance();
-
-	
 
 	public Conditions() {
 
@@ -76,33 +73,28 @@ public class Conditions {
 			Statement st = con.createStatement();
 			PreparedStatement ps = null;
 			ResultSet rs = st.executeQuery("SELECT date FROM WEATHERGLOBANT.CURRENTCONDITIONS");
-			
-			
-			
-			
-			
-			
+
 			while (rs.next()) {
 				Date dia = new java.sql.Date(date.getTime());
-				Date d2 =rs.getDate(1);
+				Date d2 = rs.getDate(1);
 				SimpleDateFormat df = new SimpleDateFormat("DDMMYYYY");
-				if(df.format(d2).equals(df.format(dia))){
+				if (df.format(d2).equals(df.format(dia))) {
 					sql = 1;
 					System.out.println("Se ha actualizado el clima para: " + new java.sql.Date(date.getTime()));
-					
-				
+
 				} else {
 					sql = 0;
-					
+
 				}
 
 			}
+			rs.close();
 
 			if (sql == 0) {
 
 				ps = con.prepareStatement(
 						"INSERT INTO WEATHERGLOBANT.CURRENTCONDITIONS (DATE,DESCRIPTION,TEMP,CHILL,WINDSPEED,SUNRISE,SUNSET,HUMIDITY,PRESSURE,VISIBILITY,TYPE) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-
+					
 			} else if (sql == 1) {
 				ps = con.prepareStatement(
 						"UPDATE WEATHERGLOBANT.CURRENTCONDITIONS SET date=?,description=?,temp=?,chill=?,windspeed=?,sunrise=?,sunset=?,humidity=?,pressure=?,visibility=?,type=? WHERE date=?");
@@ -143,7 +135,8 @@ public class Conditions {
 			Statement st = con.createStatement();
 			PreparedStatement ps = null;
 			ResultSet rs = st.executeQuery(
-					"SELECT description, temp, chill, windspeed, sunrise, sunset, humidity, pressure, visibility FROM WEATHERGLOBANT.CURRENTCONDITIONS WHERE DATE='" + d1 + "'");
+					"SELECT description, temp, chill, windspeed, sunrise, sunset, humidity, pressure, visibility FROM WEATHERGLOBANT.CURRENTCONDITIONS WHERE DATE='"
+							+ d1 + "'");
 
 			while (rs.next()) {
 
@@ -158,23 +151,16 @@ public class Conditions {
 				System.out.println("Visibilidad: " + rs.getFloat(9));
 
 			}
-
+			rs.close();
 		} catch (Exception e) {
 			System.out.println(
 					"No se pueden obtener los datos de las condiciones actuales. Descripcion Error:" + e.getMessage());
+			
 		}
 
 	}
 
-	/*
-	 * public static String getDateToString(int i) { Date d = new Date();
-	 * c.setTime(d); c.add(Calendar.DATE, i); d = c.getTime(); DateFormat df =
-	 * new SimpleDateFormat("dd/MM/YYYY"); dateToString = df.format(d);
-	 * 
-	 * return dateToString;
-	 * 
-	 * }
-	 */
+
 
 	public static void setDayDescription(String dayDesc) {
 		dayDescription = dayDesc;
@@ -186,11 +172,7 @@ public class Conditions {
 
 	}
 
-	/*
-	 * public static String getDateToString(){
-	 * 
-	 * dateToString = df.format(date); return dateToString; }
-	 */
+
 
 	public void setTemp(float temp) {
 

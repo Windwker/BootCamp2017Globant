@@ -6,6 +6,8 @@ import java.util.Date;
 
 import org.junit.Assert;
 
+import com.javieralvarez.clases.Forecast;
+
 import junit.framework.TestCase;
 
 public class ForecastTest extends TestCase {
