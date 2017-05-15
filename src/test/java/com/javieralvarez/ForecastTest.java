@@ -12,14 +12,7 @@ import junit.framework.TestCase;
 
 public class ForecastTest extends TestCase {
 	private Forecast fc = new Forecast();
-public void testGetForecastConditions(){
-	
-	try{
-		fc.getForecastConditions();
-	}catch(Exception e){
-		Assert.fail();
-	}
-}
+
 
 
 /*public void testGetDateToString()  {

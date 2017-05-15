@@ -1,0 +1,150 @@
+package com.javieralvarez.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.javieralvarez.clases.Conexion;
+import com.javieralvarez.clases.Forecast;
+
+public class DaoForecastIMP implements DaoForecast {
+	private int id = 0;
+	private int sql;
+
+	public void insertForecast(Forecast fc) {  // Inserta forecast en BD.
+		Conexion.getInstance();
+
+		Connection con = Conexion.getConexion();
+		try {
+			Statement st = con.createStatement();
+			PreparedStatement ps = null;
+			ResultSet rs = st.executeQuery("SELECT ID FROM WEATHERGLOBANT.CURRENTCONDITIONS");
+
+			while (rs.next()) {
+				id = rs.getInt(1);
+			}
+
+			for (int i = 0; i < fc.getLista().size(); i++) {
+				ps = con.prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST VALUES (?,?,?,?,?)");
+
+				ps.setInt(1, id);
+				ps.setDate(2, new java.sql.Date(fc.getLista().get(i).getNextDay((i + 1)).getTime()));
+				ps.setString(3, fc.getLista().get(i).getDayDescription());
+				ps.setFloat(4, fc.getLista().get(i).getLow());
+				ps.setFloat(5, fc.getLista().get(i).getHigh());
+
+				ps.execute(); // ps.close();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void updateForecast(Forecast fc) { // Update del Forecast en BD.
+		// TODO Auto-generated method stub
+		Conexion.getInstance();
+
+		Connection con = Conexion.getConexion();
+		try {
+			Statement st = con.createStatement();
+			PreparedStatement ps = null;
+			ResultSet rs = st.executeQuery("SELECT ID FROM WEATHERGLOBANT.CURRENTCONDITIONS");
+
+			while (rs.next()) {
+				id = rs.getInt(1);
+			}
+
+			for (int i = 0; i < fc.getLista().size(); i++) {
+				ps = con.prepareStatement(
+						"UPDATE WEATHERGLOBANT.FORECAST SET id=?,date=?,description=?, low=?, high=? WHERE date =?");
+
+				ps.setInt(1, id);
+				ps.setDate(2, new java.sql.Date(fc.getLista().get(i).getNextDay((i + 1)).getTime()));
+				ps.setString(3, fc.getLista().get(i).getDayDescription());
+				ps.setFloat(4, fc.getLista().get(i).getLow());
+				ps.setFloat(5, fc.getLista().get(i).getHigh());
+				ps.setDate(6, new java.sql.Date(fc.getLista().get(i).getDate().getTime()));
+
+				ps.execute(); // ps.close();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void selectForecast(Forecast fc) { // Resultados de la consulta en BD.
+	
+		
+		try {
+
+			Conexion.getInstance();
+			Connection con = Conexion.getConexion();
+			Statement st = con.createStatement();
+
+			ResultSet rs = st.executeQuery(
+					"SELECT date, description, low, high FROM WeatherGlobant.FORECAST WHERE ID='" + id + "'");
+			System.out.println("\n|Clima para los proximos 5 dias: |");
+			System.out.println("");
+			while (rs.next()) {
+
+				System.out.println(rs.getDate(1) + " " + rs.getString(2) + " " + "Min: " + rs.getFloat(3) + " "
+						+ "Max: " + rs.getFloat(4));
+
+			}
+
+		} catch (Exception e) {
+			System.out.println("No se pueden obtener los datos del forecast. Descripcion Error:" + e.getMessage());
+		}finally{
+			try {
+				Conexion.getConexion().close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("No se puede cerrar la conexion. " + e.getMessage());
+			}
+		}
+		
+		
+
+	}
+
+	public int verifyForecast(Forecast fc) { // Verifica si ya hay un forecast cargado para la fecha.
+		ResultSet rs;
+		Conexion.getInstance();
+		Connection con = Conexion.getConexion();
+		Statement st;
+		try {
+			st = con.createStatement();
+			rs = st.executeQuery("SELECT DATE from WEATHERGLOBANT.FORECAST");
+			for (int i = 0; i < fc.getLista().size(); i++) {
+				while (rs.next() && sql != 1) {
+					Date dia = new java.sql.Date(fc.getNextDay(i + 1).getTime());
+
+					SimpleDateFormat df = new SimpleDateFormat("DDMMYYYY");
+
+					if (df.format(dia).equals(df.format(rs.getDate(1)))) {
+						sql = 1;
+						System.out.println("\n-Se ejecuta update al Forecast Existente");
+
+					} else {
+						sql = 0;
+						System.out.println("\n-Se Inserta un nuevo Forecast");
+					}
+				}
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return sql;
+
+	}
+
+}

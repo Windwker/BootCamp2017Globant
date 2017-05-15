@@ -5,7 +5,7 @@ package com.javieralvarez.clases;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
+
 
 import org.h2.jdbc.JdbcSQLException;
 
@@ -24,7 +24,7 @@ public class Conexion {
 			con = DriverManager.getConnection(url, usr, psw);
 			
 			
-			Statement st = con.createStatement();
+
 
 			
 		} catch (JdbcSQLException e) {
