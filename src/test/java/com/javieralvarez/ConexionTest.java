@@ -38,18 +38,7 @@ public class ConexionTest extends TestCase {
 		
 	}
 	
-	public void testInicioDB(){
-		String createDB="CREATE DATABASE IF NOT EXISTS WeatherGlobant";
-	    Assert.assertEquals(createDB, Conexion.getCreateDB());
-	}
-	
-	public void testInicioTable(){
-		 String createTable="CREATE TABLE IF NOT EXISTS WeatherGlobant.Weather(date varchar(40), description varchar(50),temp float, chill float, windspeed float, sunrise varchar(60), sunset varchar(60), humidity float, pressure float, visibility float, type varchar(2),low float, high float)";
-		 Assert.assertEquals(createTable, Conexion.getCreateTable());
-	}
-	
 
-	
 	
 	public void testCreaConGetInstance(){
 		Conexion.getInstance();

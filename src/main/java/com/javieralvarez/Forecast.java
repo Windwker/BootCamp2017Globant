@@ -25,12 +25,13 @@ public class Forecast {
 	private ArrayList<Forecast> lista = new ArrayList<Forecast>();
 	private int sql;
 	private int error;
+	private int id = 0;
 
 	public Forecast() {
 	}
 
-	public Forecast(String dateToString, String description, float low, float high) {
-		this.dateToString = dateToString;
+	public Forecast(Date date, String description, float low, float high) {
+		this.date = date;
 		this.dayDescription = description;
 		this.low = low;
 		this.high = high;
@@ -44,8 +45,8 @@ public class Forecast {
 				error=0;
 				sc = new Scanner(System.in);
 				System.out.println("\n*Configurar Forecast*");
-				System.out.println("Condiciones para dia: " + getDateToString(i));
-				dateToString = getDateToString(i);
+				System.out.println("Condiciones para dia: " + getNextDay(i));
+				date = getNextDay(i);
 				System.out.println("Ingrese descripcion del clima: ");
 				dayDescription = sc.next();
 				System.out.println("Ingrese minima: ");
@@ -53,7 +54,7 @@ public class Forecast {
 				System.out.println("Ingrese maxima: ");
 				high = sc.nextFloat();
 
-				lista.add(new Forecast(dateToString, dayDescription, low, high));
+				lista.add(new Forecast(date, dayDescription, low, high));
 
 			} catch (Exception e) {
 				System.out.println("Error. Ingrese valores correctamente");
@@ -71,16 +72,26 @@ public class Forecast {
 			Statement st = con.createStatement();
 			PreparedStatement ps = null;
 			ResultSet rs;
-
-			rs = st.executeQuery("SELECT date FROM WeatherGlobant.Weather WHE"
-					+ "RE type='FC'");
-
+			ResultSet rs2;
+			rs = st.executeQuery("SELECT ID from WEATHERGLOBANT.CURRENTCONDITIONS");
+			
+			
+			while(rs.next()){
+				id = rs.getInt(1);
+			}
+			
+			rs2 = st.executeQuery("SELECT DATE FROM WEATHERGLOBANT.FORECAST");
+			
 			sql = 0;
 
 			for (int i = 0; i < lista.size(); i++) {
 
-				while (rs.next() && sql != 1) {
-					if (lista.get(i).getDateToString(i + 1).equals(rs.getString(1))) {
+				while (rs2.next() && sql != 1) {
+					Date dia = new java.sql.Date(getNextDay(i + 1).getTime());
+					Date d2 =rs2.getDate(1);
+					SimpleDateFormat df = new SimpleDateFormat("DDMMYYYY");
+					
+					if (df.format(dia).equals(df.format(rs2.getDate(1)))) {
 						sql = 1;
 						System.out.println("Se hace update del Forecast");
 
@@ -91,25 +102,19 @@ public class Forecast {
 				}
 
 				if (sql == 0) {
-					ps = con.prepareStatement("INSERT INTO WeatherGlobant.Weather VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+					ps = con.prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST VALUES (?,?,?,?,?)");
 				} else if (sql == 1) {
 					ps = con.prepareStatement(
-							"UPDATE WeatherGlobant.Weather SET date=?,description=?,temp=?,chill=?,windspeed=?,sunrise=?,sunset=?,humidity=?,pressure=?,visibility=?, type=?, low=?, high=? WHERE date=?");
-					ps.setString(14, getDateToString(i + 1));
+							"UPDATE WEATHERGLOBANT.FORECAST SET id=?,date=?,description=?, low=?, high=? WHERE date =?");
+					Date d1 = getNextDay((i + 1));
+					ps.setDate(6, new java.sql.Date(lista.get(i).getDate().getTime())  );
 				}
-				ps.setString(1, lista.get(i).getDateToString(i + 1));
-				ps.setString(2, lista.get(i).getDayDescription());
-				ps.setFloat(3, 0);
-				ps.setFloat(4, 0);
-				ps.setFloat(5, 0);
-				ps.setString(6, "null");
-				ps.setString(7, "null");
-				ps.setFloat(8, 0);
-				ps.setFloat(9, 0);
-				ps.setFloat(10, 0);
-				ps.setString(11, "FC");
-				ps.setFloat(12, lista.get(i).getLow());
-				ps.setFloat(13, lista.get(i).getHigh());
+				ps.setInt(1, id);
+				ps.setDate(2, new java.sql.Date(lista.get(i).getNextDay((i + 1)).getTime()));
+				ps.setString(3, lista.get(i).getDayDescription());
+				ps.setFloat(4, lista.get(i).getLow());
+				ps.setFloat(5, lista.get(i).getHigh());
+
 				ps.execute(); // ps.close();
 
 			}
@@ -123,15 +128,16 @@ public class Forecast {
 	public void getForecastConditions() {
 		try {
 
-			Connection con = Conexion.getInstance().getConexion();
+			Conexion.getInstance();
+			Connection con = Conexion.getConexion();
 			Statement st = con.createStatement();
 			PreparedStatement ps = null;
-			ResultSet rs = st.executeQuery("SELECT date, description, low, high FROM WeatherGlobant.Weather WHERE type='FC'");
+			ResultSet rs = st.executeQuery("SELECT date, description, low, high FROM WeatherGlobant.FORECAST WHERE ID='"+id+"'");
 			System.out.println("\nClima para los proximos 5 dias:");
 			System.out.println("");
 			while(rs.next()){
 				
-				System.out.println(rs.getString(1)+" "+rs.getString(2)+" "+"Min: " +rs.getFloat(3)+" "+"Max: "+rs.getFloat(4));
+				System.out.println(rs.getDate(1)+" "+rs.getString(2)+" "+"Min: " +rs.getFloat(3)+" "+"Max: "+rs.getFloat(4));
 				
 			}
 
@@ -141,15 +147,14 @@ public class Forecast {
 
 	}
 
-	public String getDateToString(int i) {
+	public Date getNextDay(int i) {
 		Date d = new Date();
-		c.setTime(d);
+		Date d1 = new java.sql.Date(d.getTime());
+		c.setTime(d1);
 		c.add(Calendar.DATE, i);
 		d = c.getTime();
-		DateFormat df = new SimpleDateFormat("dd/MM/YYYY");
-		dateToString = df.format(d);
-
-		return dateToString;
+		
+		return d;
 
 	}
 
