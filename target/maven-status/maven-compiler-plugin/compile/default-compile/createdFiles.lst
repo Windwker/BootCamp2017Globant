@@ -1,4 +1,8 @@
-com/javieralvarez/Conditions.class
-com/javieralvarez/Conexion.class
-com/javieralvarez/Forecast.class
-com/javieralvarez/WeatherGlobant.class
+com/javieralvarez/clases/Conexion.class
+com/javieralvarez/clases/WeatherGlobant.class
+com/javieralvarez/dao/DaoForecastIMP.class
+com/javieralvarez/clases/Conditions.class
+com/javieralvarez/clases/Forecast.class
+com/javieralvarez/dao/DaoConditions.class
+com/javieralvarez/dao/DaoForecast.class
+com/javieralvarez/dao/DaoConditionsIMP.class
