@@ -1,6 +1,6 @@
 package com.javieralvarez.consolereader;
 
-import java.util.ArrayList;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
@@ -16,7 +16,6 @@ public class ForecastReader {
 	private static int dayCounter=1;
 	
 	private int error;
-	private int id = 0;
 
 public void forecastConsoleReader(){
 	
