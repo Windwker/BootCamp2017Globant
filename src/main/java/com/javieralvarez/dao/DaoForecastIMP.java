@@ -41,7 +41,9 @@ public class DaoForecastIMP implements DaoForecast {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+		} catch (Exception e){
+			System.out.println("No se puede insertar el forecast. Error: Base de datos en uso.");
 		}
 
 	}
@@ -75,8 +77,11 @@ public class DaoForecastIMP implements DaoForecast {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+		} catch (Exception e){
+			System.out.println("No se puede ejecutar Update del Forecast. Error: Base de datos en uso.");
 		}
+		
 	}
 
 	public void selectForecast(Forecast fc) { // Resultados de la consulta en BD.
@@ -89,7 +94,7 @@ public class DaoForecastIMP implements DaoForecast {
 			Statement st = con.createStatement();
 
 			ResultSet rs = st.executeQuery(
-					"SELECT date, description, low, high FROM WeatherGlobant.FORECAST WHERE ID='" + id + "'");
+					"SELECT date, description, low, high FROM WEATHERGLOBANT.FORECAST WHERE ID='" + id + "'");
 			System.out.println("\n|Clima para los proximos 5 dias: |");
 			System.out.println("");
 			while (rs.next()) {
@@ -99,14 +104,22 @@ public class DaoForecastIMP implements DaoForecast {
 
 			}
 
-		} catch (Exception e) {
-			System.out.println("No se pueden obtener los datos del forecast. Descripcion Error:" + e.getMessage());
-		}finally{
+			
+		}catch(SQLException e){
+			System.out.println("No se pueden obtener los datos del forecast. Error: " + e.getMessage());
+		}catch (Exception e) {
+			System.out.println("No se pueden obtener los datos del forecast. Error: Base de datos en uso.");
+		}
+
+		
+		finally{
 			try {
 				Conexion.getConexion().close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				System.out.println("No se puede cerrar la conexion. " + e.getMessage());
+			}catch (Exception e){
+				System.out.println("Verifique que la BD H2 no se encuentre en uso");
 			}
 		}
 		
@@ -120,28 +133,39 @@ public class DaoForecastIMP implements DaoForecast {
 		Connection con = Conexion.getConexion();
 		Statement st;
 		try {
+			Date dia = new java.sql.Date(fc.getNextDay(1).getTime());
 			st = con.createStatement();
-			rs = st.executeQuery("SELECT DATE from WEATHERGLOBANT.FORECAST");
+			rs = st.executeQuery("SELECT DATE from WEATHERGLOBANT.FORECAST where DATE ='"+dia+"'");
 			for (int i = 0; i < fc.getLista().size(); i++) {
 				while (rs.next() && sql != 1) {
-					Date dia = new java.sql.Date(fc.getNextDay(i + 1).getTime());
+					dia = new java.sql.Date(fc.getNextDay(i + 1).getTime());
 
 					SimpleDateFormat df = new SimpleDateFormat("DDMMYYYY");
 
 					if (df.format(dia).equals(df.format(rs.getDate(1)))) {
 						sql = 1;
-						System.out.println("\n-Se ejecuta update al Forecast Existente");
+						
 
 					} else {
 						sql = 0;
-						System.out.println("\n-Se Inserta un nuevo Forecast");
+						
 					}
 				}
 			}
+			
+			if(sql==1){
+				System.out.println("\n-Se ejecuta update al Forecast Existente");
+			}else{
+				System.out.println("\n-Se Inserta un nuevo Forecast");
+			}
+				
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			
 		}
 		return sql;
 

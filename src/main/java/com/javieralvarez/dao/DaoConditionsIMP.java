@@ -12,7 +12,7 @@ import com.javieralvarez.clases.Conditions;
 import com.javieralvarez.clases.Conexion;
 
 public class DaoConditionsIMP implements DaoConditions {
-
+private int sql=0;
 	public void insertConditions(Conditions con) { // Ejecuta el insert en BD.
 		try{
 			Conexion.getInstance();
@@ -32,8 +32,10 @@ public class DaoConditionsIMP implements DaoConditions {
 			
 			
 			
+		}catch(SQLException e){
+			System.out.println("No se pueden agregar condiciones actuales. Error: " +e.getMessage());
 		}catch(Exception e){
-		System.out.println("No se pueden agregar condiciones actuales. Error: "+e.getMessage());
+		System.out.println("No se pueden agregar condiciones actuales. Error: Base de datos en uso.");
 		}			
 
 		
@@ -61,9 +63,11 @@ public class DaoConditionsIMP implements DaoConditions {
 			
 			
 			
-		}catch(Exception e){
+		}catch(SQLException e){
 			System.out.println("No se pueden actualizar las condiciones actuales. Error : " + e.getMessage());
 
+		}catch(Exception e){
+			System.out.println("No se pueden actualizar las condiciones actuales. Error: Base de datos en uso.");
 		}
 		
 		
@@ -72,34 +76,43 @@ public class DaoConditionsIMP implements DaoConditions {
 
 	public int verifyConditions(Conditions con) { // Verifica si ya se encuentra cargado en BD las condiciones del dia.
 		Conexion.getInstance();
-		int sql=0;
+		
 		Statement st;
 		try {
 			st = Conexion.getConexion().createStatement();
-
-			ResultSet rs = st.executeQuery("SELECT date FROM WEATHERGLOBANT.CURRENTCONDITIONS");
+			Date dia = new java.sql.Date(con.getDate().getTime());
+			ResultSet rs = st.executeQuery("SELECT date FROM WEATHERGLOBANT.CURRENTCONDITIONS where date = '"+ dia +"'");
+			
 			while (rs.next()) {
-				Date dia = new java.sql.Date(con.getDate().getTime());
+				
 				Date d2 = rs.getDate(1);
 				SimpleDateFormat df = new SimpleDateFormat("DDMMYYYY");
 				if (df.format(d2).equals(df.format(dia))) {
 					sql = 1;
-					System.out.println("\n-Se ejecuta update a las condiciones actuales.");
+					System.out.println();
 					
 
 				} else {
 					sql = 0;
-					System.out.println("\n-Se ejecuta insert de condiciones actuales.");
+					
 				}
 
 			}
 			
+			if(sql==0){
+				System.out.println("\n-Se ejecuta insert de condiciones actuales.");
+			}else{
+				System.out.println("\n-Se ejecuta update a las condiciones actuales.");
+			}
 			
 			
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.getMessage();
+			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("Error: Base de datos en uso");
 		}
 		return sql;
 		
@@ -135,9 +148,11 @@ public class DaoConditionsIMP implements DaoConditions {
 
 			}
 			
+		} catch (SQLException e){
+			System.out.println("No se pueden obtener los datos de las condiciones actuales. Error: " +e.getMessage());
 		} catch (Exception e) {
 			System.out.println(
-					"No se pueden obtener los datos de las condiciones actuales. Error: " + e.getMessage());
+					"No se pueden obtener los datos de las condiciones actuales. Error: Base de datos en uso.");
 			
 		}
 		

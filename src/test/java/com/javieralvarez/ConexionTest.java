@@ -15,13 +15,13 @@ public class ConexionTest extends TestCase {
 	private static String usr = "JAVI";
 	private static String psw = "1234";
 
-	public void testURL() {
+/*	public void testURL() {
 
 		Assert.assertEquals(url, Conexion.getUrl());
 		Assert.assertEquals(usr, Conexion.getUsr());
 		Assert.assertEquals(psw, Conexion.getPsw());
 
-	}
+	}*/
 
 	public void testURLII() {
 		Conexion.getInstance();

@@ -12,6 +12,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class ConditionsTest extends TestCase {
+}
+
 	
 /*	public void testGetDateToString()  {
 		
@@ -19,7 +21,7 @@ public class ConditionsTest extends TestCase {
 
 	}*/
 	
-	
+	/*
 	public void testSetGet(){
 		Conditions cond = new Conditions();
 		cond.setChill(10);
@@ -44,15 +46,15 @@ public class ConditionsTest extends TestCase {
 		
 	}
 	
-/*	public void testInput(){
+	public void testInput(){
 		try{
 		Conditions cond = new Conditions();
 		cond.setCurrentConditions();
 		}catch(InputMismatchException IME){
 		Assert.fail();
 		}
-	}*/
+	}
 	
 	
-}
+}*/
 
