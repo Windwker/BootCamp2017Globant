@@ -10,14 +10,16 @@ import java.util.Date;
 
 import com.javieralvarez.clases.Conexion;
 import com.javieralvarez.clases.Forecast;
+import com.javieralvarez.consolereader.ForecastReader;
 
 public class DaoForecastIMP implements DaoForecast {
 	private int id = 0;
 	private int sql;
-
+	ForecastReader fr = new ForecastReader();
+	
 	public void insertForecast(Forecast fc) {  // Inserta forecast en BD.
 		Conexion.getInstance();
-
+		
 		Connection con = Conexion.getConexion();
 		try {
 			Statement st = con.createStatement();
@@ -28,17 +30,17 @@ public class DaoForecastIMP implements DaoForecast {
 				id = rs.getInt(1);
 			}
 
-			for (int i = 0; i < fc.getLista().size(); i++) {
+			
 				ps = con.prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST VALUES (?,?,?,?,?)");
 
 				ps.setInt(1, id);
-				ps.setDate(2, new java.sql.Date(fc.getLista().get(i).getNextDay((i + 1)).getTime()));
-				ps.setString(3, fc.getLista().get(i).getDayDescription());
-				ps.setFloat(4, fc.getLista().get(i).getLow());
-				ps.setFloat(5, fc.getLista().get(i).getHigh());
+				ps.setDate(2, new java.sql.Date(fc.getDate().getTime()));
+				ps.setString(3, fc.getDayDescription());
+				ps.setFloat(4, fc.getLow());
+				ps.setFloat(5, fc.getHigh());
 
 				ps.execute(); // ps.close();
-			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
@@ -62,19 +64,19 @@ public class DaoForecastIMP implements DaoForecast {
 				id = rs.getInt(1);
 			}
 
-			for (int i = 0; i < fc.getLista().size(); i++) {
+			
 				ps = con.prepareStatement(
 						"UPDATE WEATHERGLOBANT.FORECAST SET id=?,date=?,description=?, low=?, high=? WHERE date =?");
 
 				ps.setInt(1, id);
-				ps.setDate(2, new java.sql.Date(fc.getLista().get(i).getNextDay((i + 1)).getTime()));
-				ps.setString(3, fc.getLista().get(i).getDayDescription());
-				ps.setFloat(4, fc.getLista().get(i).getLow());
-				ps.setFloat(5, fc.getLista().get(i).getHigh());
-				ps.setDate(6, new java.sql.Date(fc.getLista().get(i).getDate().getTime()));
+				ps.setDate(2, new java.sql.Date(fc.getDate().getTime()));
+				ps.setString(3, fc.getDayDescription());
+				ps.setFloat(4, fc.getLow());
+				ps.setFloat(5, fc.getHigh());
+				ps.setDate(6, new java.sql.Date(fc.getDate().getTime()));
 
 				ps.execute(); // ps.close();
-			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
@@ -84,7 +86,7 @@ public class DaoForecastIMP implements DaoForecast {
 		
 	}
 
-	public void selectForecast(Forecast fc) { // Resultados de la consulta en BD.
+	public void selectForecast() { // Resultados de la consulta en BD.
 	
 		
 		try {
@@ -133,12 +135,12 @@ public class DaoForecastIMP implements DaoForecast {
 		Connection con = Conexion.getConexion();
 		Statement st;
 		try {
-			Date dia = new java.sql.Date(fc.getNextDay(1).getTime());
+			Date dia = new java.sql.Date(fc.getDate().getTime());
 			st = con.createStatement();
 			rs = st.executeQuery("SELECT DATE from WEATHERGLOBANT.FORECAST where DATE ='"+dia+"'");
-			for (int i = 0; i < fc.getLista().size(); i++) {
+			 
 				while (rs.next() && sql != 1) {
-					dia = new java.sql.Date(fc.getNextDay(i + 1).getTime());
+					dia = new java.sql.Date(fc.getDate().getTime());
 
 					SimpleDateFormat df = new SimpleDateFormat("DDMMYYYY");
 
@@ -151,7 +153,7 @@ public class DaoForecastIMP implements DaoForecast {
 						
 					}
 				}
-			}
+			
 			
 			if(sql==1){
 				System.out.println("\n-Se ejecuta update al Forecast Existente");
