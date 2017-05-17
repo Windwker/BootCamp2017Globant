@@ -65,8 +65,6 @@ public class WeatherGlobant {
 
 	}
 	
-	public ArrayList<Forecast> getLista(){
-		return lista;
-	}
+
 
 }
