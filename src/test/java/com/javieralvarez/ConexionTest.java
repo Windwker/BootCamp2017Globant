@@ -40,5 +40,9 @@ public class ConexionTest extends TestCase {
 		Conexion.getInstance();
 		Assert.assertNotNull(Conexion.getConexion());
 	}
+	
+	public void testSameInstance(){
+		Assert.assertEquals(Conexion.getInstance(), Conexion.getInstance());
+	}
 
 }
