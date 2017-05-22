@@ -5,7 +5,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
 
+import org.springframework.stereotype.Component;
 
+@Component
 public class ForecastReader {
 	private Date date;
 	private float high, low;

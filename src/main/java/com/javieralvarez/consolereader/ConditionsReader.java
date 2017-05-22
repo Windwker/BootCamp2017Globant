@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import org.springframework.stereotype.Component;
+@Component
 public class ConditionsReader {
 	
 	private Date date;

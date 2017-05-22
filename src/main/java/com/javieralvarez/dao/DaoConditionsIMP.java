@@ -8,25 +8,37 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.javieralvarez.clases.Conditions;
 import com.javieralvarez.clases.Conexion;
 
-public class DaoConditionsIMP implements DaoConditions {
+@Repository
+public class DaoConditionsIMP implements ForecastAndConditionsDao<Conditions> {
+
 private int sql=0;
-	public void insertConditions(Conditions con) { // Ejecuta el insert en BD.
+
+@Autowired
+private Conexion conexion;
+
+
+
+	public void insert(Conditions conditions) { // Ejecuta el insert en BD.
 		try{
-			Conexion.getInstance();
-			PreparedStatement ps = Conexion.getConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.CURRENTCONDITIONS (DATE,DESCRIPTION,TEMP,CHILL,WINDSPEED,SUNRISE,SUNSET,HUMIDITY,PRESSURE,VISIBILITY,TYPE) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-			ps.setDate(1, new java.sql.Date(con.getDate().getTime()));
-			ps.setString(2, con.getDayDescription());
-			ps.setFloat(3, con.getTemp());
-			ps.setFloat(4, con.getChill());
-			ps.setFloat(5, con.getWindSpeed());
-			ps.setString(6, con.getSunrise());
-			ps.setString(7, con.getSunset());
-			ps.setFloat(8, con.getHumidity());
-			ps.setFloat(9, con.getPressure());
-			ps.setFloat(10, con.getVisibility());
+		
+			
+			PreparedStatement ps = conexion.setConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.CURRENTCONDITIONS (DATE,DESCRIPTION,TEMP,CHILL,WINDSPEED,SUNRISE,SUNSET,HUMIDITY,PRESSURE,VISIBILITY,TYPE) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+			ps.setDate(1, new java.sql.Date(conditions.getDate().getTime()));
+			ps.setString(2, conditions.getDayDescription());
+			ps.setFloat(3, conditions.getTemp());
+			ps.setFloat(4, conditions.getChill());
+			ps.setFloat(5, conditions.getWindSpeed());
+			ps.setString(6, conditions.getSunrise());
+			ps.setString(7, conditions.getSunset());
+			ps.setFloat(8, conditions.getHumidity());
+			ps.setFloat(9, conditions.getPressure());
+			ps.setFloat(10, conditions.getVisibility());
 			ps.setString(11, "CC");
 			ps.execute();
 			
@@ -34,31 +46,33 @@ private int sql=0;
 			
 		}catch(SQLException e){
 			System.out.println("No se pueden agregar condiciones actuales. Error: " +e.getMessage());
-		}catch(Exception e){
-		System.out.println("No se pueden agregar condiciones actuales. Error: Base de datos en uso.");
+		}
+/*		}catch(Exception e){
+		System.out.println(e.getStackTrace());
+			System.out.println("No se pueden agregar condiciones actuales. Error: Base de datos en uso."+ e.getMessage());
 		}			
-
+*/
 		
 	}
 
-	public void updateConditions(Conditions con) { // Ejecuta el update de BD.
+	public void update(Conditions conditions) { // Ejecuta el update de BD.
 		
 		
 		try{
-			Conexion.getInstance();
-			PreparedStatement ps = Conexion.getConexion().prepareStatement("UPDATE WEATHERGLOBANT.CURRENTCONDITIONS SET date=?,description=?,temp=?,chill=?,windspeed=?,sunrise=?,sunset=?,humidity=?,pressure=?,visibility=?,type=? WHERE date=?");
-			ps.setDate(1, new java.sql.Date(con.getDate().getTime()));
-			ps.setString(2, con.getDayDescription());
-			ps.setFloat(3, con.getTemp());
-			ps.setFloat(4, con.getChill());
-			ps.setFloat(5, con.getWindSpeed());
-			ps.setString(6, con.getSunrise());
-			ps.setString(7, con.getSunset());
-			ps.setFloat(8, con.getHumidity());
-			ps.setFloat(9, con.getPressure());
-			ps.setFloat(10, con.getVisibility());
+			
+			PreparedStatement ps = conexion.setConexion().prepareStatement("UPDATE WEATHERGLOBANT.CURRENTCONDITIONS SET date=?,description=?,temp=?,chill=?,windspeed=?,sunrise=?,sunset=?,humidity=?,pressure=?,visibility=?,type=? WHERE date=?");
+			ps.setDate(1, new java.sql.Date(conditions.getDate().getTime()));
+			ps.setString(2, conditions.getDayDescription());
+			ps.setFloat(3, conditions.getTemp());
+			ps.setFloat(4, conditions.getChill());
+			ps.setFloat(5, conditions.getWindSpeed());
+			ps.setString(6, conditions.getSunrise());
+			ps.setString(7, conditions.getSunset());
+			ps.setFloat(8, conditions.getHumidity());
+			ps.setFloat(9, conditions.getPressure());
+			ps.setFloat(10, conditions.getVisibility());
 			ps.setString(11, "CC");
-			ps.setDate(12, new java.sql.Date(con.getDate().getTime()));
+			ps.setDate(12, new java.sql.Date(conditions.getDate().getTime()));
 			ps.execute();
 			
 			
@@ -74,13 +88,13 @@ private int sql=0;
 		
 	}
 
-	public int verifyConditions(Conditions con) { // Verifica si ya se encuentra cargado en BD las condiciones del dia.
-		Conexion.getInstance();
+	public int verifyBD(Conditions conditions) { // Verifica si ya se encuentra cargado en BD las condiciones del dia.
+		
 		
 		Statement st;
 		try {
-			st = Conexion.getConexion().createStatement();
-			Date dia = new java.sql.Date(con.getDate().getTime());
+			st = conexion.setConexion().createStatement();
+			Date dia = new java.sql.Date(conditions.getDate().getTime());
 			ResultSet rs = st.executeQuery("SELECT date FROM WEATHERGLOBANT.CURRENTCONDITIONS where date = '"+ dia +"'");
 			
 			while (rs.next()) {
@@ -119,16 +133,16 @@ private int sql=0;
 		
 	}
 
-	public void selectConditions(Conditions con) {
+	public void select(Conditions conditions) {
 		try {
-			Conexion.getInstance();
-			Date d1 = new java.sql.Date(con.getDate().getTime());
+			
+			Date d1 = new java.sql.Date(conditions.getDate().getTime());
 			System.out.println("\n*** GLOBANT FORECAST 1.0***");
 			System.out.println("\n|Clima para " + d1 +"|");
 
 			
 			
-			Statement st = Conexion.getConexion().createStatement(); // Ejecuta Query en BD.
+			Statement st = conexion.setConexion().createStatement(); // Ejecuta Query en BD.
 
 			ResultSet rs = st.executeQuery(
 					"SELECT description, temp, chill, windspeed, sunrise, sunset, humidity, pressure, visibility FROM WEATHERGLOBANT.CURRENTCONDITIONS WHERE DATE='"
@@ -157,5 +171,11 @@ private int sql=0;
 		}
 		
 	}
+
+
+
+
+
+
 
 }

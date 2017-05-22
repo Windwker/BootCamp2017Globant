@@ -1,8 +1,9 @@
-/home/javi/Dropbox/Eclipse/BootCampWeather/src/main/java/com/javieralvarez/dao/DaoConditions.java
 /home/javi/Dropbox/Eclipse/BootCampWeather/src/main/java/com/javieralvarez/clases/Conditions.java
 /home/javi/Dropbox/Eclipse/BootCampWeather/src/main/java/com/javieralvarez/clases/Conexion.java
-/home/javi/Dropbox/Eclipse/BootCampWeather/src/main/java/com/javieralvarez/dao/DaoForecast.java
 /home/javi/Dropbox/Eclipse/BootCampWeather/src/main/java/com/javieralvarez/clases/Forecast.java
 /home/javi/Dropbox/Eclipse/BootCampWeather/src/main/java/com/javieralvarez/dao/DaoConditionsIMP.java
 /home/javi/Dropbox/Eclipse/BootCampWeather/src/main/java/com/javieralvarez/dao/DaoForecastIMP.java
 /home/javi/Dropbox/Eclipse/BootCampWeather/src/main/java/com/javieralvarez/clases/WeatherGlobant.java
+/home/javi/Dropbox/Eclipse/BootCampWeather/src/main/java/com/javieralvarez/dao/ForecastAndConditionsDao.java
+/home/javi/Dropbox/Eclipse/BootCampWeather/src/main/java/com/javieralvarez/consolereader/ConditionsReader.java
+/home/javi/Dropbox/Eclipse/BootCampWeather/src/main/java/com/javieralvarez/consolereader/ForecastReader.java
