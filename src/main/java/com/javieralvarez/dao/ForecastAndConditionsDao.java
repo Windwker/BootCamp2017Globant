@@ -1,6 +1,6 @@
 package com.javieralvarez.dao;
 
-import org.springframework.stereotype.Component;
+
 
 
 public interface ForecastAndConditionsDao<T> {

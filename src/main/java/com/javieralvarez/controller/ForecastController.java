@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +19,7 @@ import com.javieralvarez.clases.Forecast;
 public class ForecastController {
 @Autowired
 Conexion conexion;	
-@RequestMapping(value = "/selectforecasts", method = RequestMethod.GET,headers="Accept=application/json")
+@RequestMapping(value = "/selectforecast", method = RequestMethod.GET,headers="Accept=application/json")
 public ArrayList<Forecast> getForecast(){
 
 
@@ -48,32 +48,53 @@ public ArrayList<Forecast> getForecast(){
 	
 }
 @RequestMapping(value = "/selectforecast/{date}", method = RequestMethod.GET,headers="Accept=application/json")
-public String getForecastDate(@PathVariable String date){
-	String forecast=null;
+public ArrayList<Forecast> getForecastDate(@PathVariable String date){
+
+
 	
+	Forecast.Builder forecastBuilder = new Forecast.Builder();
+	
+	ArrayList<Forecast> listado = new ArrayList<Forecast>();
 	try {
 		PreparedStatement ps = conexion.setConexion().prepareStatement("SELECT * FROM WEATHERGLOBANT.FORECAST WHERE DATE=?");
-		ps.setString(1,date) ;
+		ps.setString(1, date);
 		ResultSet rs = ps.executeQuery();
+		
 		while(rs.next()){
-			forecast = "Fecha: " + rs.getDate(2) +" Descripcion: "+rs.getString(3)+" Minima: "+rs.getFloat(4)+" Maxima: " +rs.getFloat(5);
+			listado.add(forecastBuilder.date(rs.getDate(2)).dayDescription(rs.getString(3))
+					.low(rs.getFloat(4)).high(rs.getFloat(5)).build());
+		
 		}
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-	
-	return forecast;
-	
-	
-	
-	
+	return listado;
+
+
 }
 
 
-@RequestMapping(value ="/insertforecast/{date}/{description}/{low}/{high}")
-public void insertForecastDescription(@PathVariable String date,@PathVariable String description,@PathVariable float low,@PathVariable float high){
 
+
+
+@RequestMapping(value ="/insertforecast",method = RequestMethod.POST)
+public void insertForecast(@RequestBody Forecast f){
+	
+	PreparedStatement ps;
+	try {
+		ps = conexion.setConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST (DATE, DESCRIPTION, LOW, HIGH) VALUES (?,?,?,?)");
+		ps.setDate(1, new java.sql.Date(f.getDate().getTime()));
+		ps.setString(2, f.getDayDescription());
+		ps.setFloat(3, f.getLow());
+		ps.setFloat(4, f.getHigh());
+		ps.execute();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+/*
 	try {
 		PreparedStatement ps = conexion.setConexion().prepareStatement("SELECT DATE from WEATHERGLOBANT.FORECAST WHERE DATE=?");
 		ps.setString(1, date);
@@ -114,7 +135,7 @@ public void insertForecastDescription(@PathVariable String date,@PathVariable St
 	}
 	
 }
+*/
 
-
-
+}
 }
