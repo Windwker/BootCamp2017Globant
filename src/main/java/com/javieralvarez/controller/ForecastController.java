@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,16 +17,18 @@ import com.javieralvarez.clases.Forecast;
 
 @RestController
 public class ForecastController {
+@Autowired
+Conexion conexion;	
 @RequestMapping(value = "/selectforecasts", method = RequestMethod.GET,headers="Accept=application/json")
 public ArrayList<Forecast> getForecast(){
 
-	Conexion.getInstance();
+
 	
 	Forecast.Builder forecastBuilder = new Forecast.Builder();
 	
 	ArrayList<Forecast> listado = new ArrayList<Forecast>();
 	try {
-		PreparedStatement ps = Conexion.getConexion().prepareStatement("SELECT * FROM WEATHERGLOBANT.FORECAST");
+		PreparedStatement ps = conexion.setConexion().prepareStatement("SELECT * FROM WEATHERGLOBANT.FORECAST");
 		ResultSet rs = ps.executeQuery();
 		
 		while(rs.next()){
@@ -44,11 +48,11 @@ public ArrayList<Forecast> getForecast(){
 	
 }
 @RequestMapping(value = "/selectforecast/{date}", method = RequestMethod.GET,headers="Accept=application/json")
-public String getEmpleadosDni(@PathVariable String date){
+public String getForecastDate(@PathVariable String date){
 	String forecast=null;
-	Conexion.getInstance();
+	
 	try {
-		PreparedStatement ps = Conexion.getConexion().prepareStatement("SELECT * FROM WEATHERGLOBANT.FORECAST WHERE DATE=?");
+		PreparedStatement ps = conexion.setConexion().prepareStatement("SELECT * FROM WEATHERGLOBANT.FORECAST WHERE DATE=?");
 		ps.setString(1,date) ;
 		ResultSet rs = ps.executeQuery();
 		while(rs.next()){
@@ -69,14 +73,14 @@ public String getEmpleadosDni(@PathVariable String date){
 
 @RequestMapping(value ="/insertforecast/{date}/{description}/{low}/{high}")
 public void insertForecastDescription(@PathVariable String date,@PathVariable String description,@PathVariable float low,@PathVariable float high){
-	Conexion.getInstance();
+
 	try {
-		PreparedStatement ps = Conexion.getConexion().prepareStatement("SELECT DATE from WEATHERGLOBANT.FORECAST WHERE DATE=?");
+		PreparedStatement ps = conexion.setConexion().prepareStatement("SELECT DATE from WEATHERGLOBANT.FORECAST WHERE DATE=?");
 		ps.setString(1, date);
 		ResultSet rs = ps.executeQuery();
 		while(rs.next()){
 			if(rs.getString(1).equals(date)){
-				ps = Conexion.getConexion().prepareStatement("UPDATE WEATHERGLOBANT.FORECAST SET DESCRIPTION=?, LOW=?, HIGH=? WHERE DATE=?");
+				ps = conexion.setConexion().prepareStatement("UPDATE WEATHERGLOBANT.FORECAST SET DESCRIPTION=?, LOW=?, HIGH=? WHERE DATE=?");
 				
 				ps.setString(1, description);
 				ps.setFloat(2, low);
@@ -84,7 +88,7 @@ public void insertForecastDescription(@PathVariable String date,@PathVariable St
 				ps.setString(4, date);
 				ps.execute();
 			}else{
-				ps = Conexion.getConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST (DATE, DESCRIPTION, LOW, HIGH) VALUES (?,?,?,?)");
+				ps = conexion.setConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST (DATE, DESCRIPTION, LOW, HIGH) VALUES (?,?,?,?)");
 				ps.setString(1, date);
 				ps.setString(2, description);
 				ps.setFloat(3, low);
@@ -94,7 +98,7 @@ public void insertForecastDescription(@PathVariable String date,@PathVariable St
 			}
 		}
 		if(rs.absolute(1)==false){
-			ps = Conexion.getConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST (DATE, DESCRIPTION, LOW, HIGH) VALUES (?,?,?,?)");
+			ps = conexion.setConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST (DATE, DESCRIPTION, LOW, HIGH) VALUES (?,?,?,?)");
 			ps.setString(1, date);
 			ps.setString(2, description);
 			ps.setFloat(3, low);

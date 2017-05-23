@@ -33,7 +33,7 @@ public class WeatherGlobant {
 	public static void main(String[] args) {
 		ApplicationContext appContext = new ClassPathXmlApplicationContext("com/javieralvarez/clases/Beans.xml");
 		WeatherGlobant main = appContext.getBean(WeatherGlobant.class);
-		((ConfigurableApplicationContext)appContext).close();
+		//((ConfigurableApplicationContext)appContext).close();
 		main.iniciar();
 		
 }

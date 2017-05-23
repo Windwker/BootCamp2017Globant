@@ -27,6 +27,7 @@ public class Conexion {
 
 public Connection setConexion(){
 	try {
+		Class.forName("com.mysql.jdbc.Driver");
 		 con = DriverManager.getConnection(urlmysql,usrmysql,pswmysql);
 		 
 	} catch (JdbcSQLException e) {
@@ -43,6 +44,9 @@ public Connection setConexion(){
 			// TODO Auto-generated catch block
 			System.out.println(e1.getMessage());
 		}
+	} catch (ClassNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
 	return con;
 	
