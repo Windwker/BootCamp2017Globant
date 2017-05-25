@@ -1,0 +1,45 @@
+package com.javieralvarez.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.javieralvarez.clases.Conexion;
+import com.javieralvarez.clases.Conditions;
+import com.javieralvarez.dao.DaoConditionsIMP;
+
+@RestController
+public class ConditionsController {
+	@Autowired
+	Conexion conexion;
+	@Autowired
+	DaoConditionsIMP daoc;
+
+	@RequestMapping(value = "/selectconditions", method = RequestMethod.GET, headers = "Accept=application/json")
+	public List<Conditions> getConditions() {
+
+		List<Conditions> listado = daoc.select(null);
+		return listado;
+
+	}
+
+	@RequestMapping(value = "/selectconditions/{date}", method = RequestMethod.GET, headers = "Accept=application/json")
+	public List<Conditions> getConditionsDate(@PathVariable String date) {
+
+		List<Conditions> listado = daoc.select(date);
+
+		return listado;
+
+	}
+
+	@RequestMapping(value = "/insertconditions", method = RequestMethod.POST)
+	public void insertConditions(@RequestBody Conditions c) {
+		daoc.insert(c);
+	}
+
+}

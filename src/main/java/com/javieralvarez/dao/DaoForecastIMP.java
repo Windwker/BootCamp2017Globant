@@ -4,8 +4,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -17,12 +20,10 @@ import com.javieralvarez.clases.Forecast;
 public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {
 	private int id = 0;
 	private int sql;
-	
+	List<Forecast> lista;
 	@Autowired
 	private Conexion conexion;
-/*	ApplicationContext appContext = new ClassPathXmlApplicationContext("com/javieralvarez/clases/Beans.xml");
-	Conexion conexion = appContext.getBean(Conexion.class);
-*/
+
 
 
 
@@ -33,15 +34,16 @@ public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {
 			Statement st = conexion.setConexion().createStatement();
 			PreparedStatement ps = null;
 			ResultSet rs = st.executeQuery("SELECT ID FROM WEATHERGLOBANT.CURRENTCONDITIONS");
-
+			
 			while (rs.next()) {
 				id = rs.getInt(1);
 			}
-
+			Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+			String s = formatter.format(fc.getDate());
 			ps = conexion.setConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST VALUES (?,?,?,?,?)");
 
 			ps.setInt(1, id);
-			ps.setDate(2, new java.sql.Date(fc.getDate().getTime()));
+			ps.setString(2, (s));
 			ps.setString(3, fc.getDayDescription());
 			ps.setFloat(4, fc.getLow());
 			ps.setFloat(5, fc.getHigh());
@@ -52,7 +54,7 @@ public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		} catch (Exception e) {
-			System.out.println("No se puede insertar el forecast. Error: Base de datos en uso.");
+			System.out.println(e.getMessage());
 		}
 
 	}
@@ -90,40 +92,51 @@ public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {
 
 	}
 
-	public void select(Forecast fc) { // Resultados de la consulta en BD.
+	public List<Forecast> select(String r) { // Resultados de la consulta en BD.
 
 		try {
 
 
 			Statement st = conexion.setConexion().createStatement();
 
+		if(r!=null){
+			
+				ResultSet rs = st.executeQuery(
+						"SELECT date, description, low, high FROM WEATHERGLOBANT.FORECAST WHERE date='"+r+"'");
+				lista = new ArrayList<Forecast>();
+				
+				Forecast.Builder forecastBuilder = new Forecast.Builder();
+				while (rs.next()) {
+					
+					lista.add(forecastBuilder.date(rs.getDate(1)).dayDescription(rs.getString(2)).low(rs.getFloat(3))
+							.high(rs.getFloat(4)).build());
+					
+				}
+		}else{
 			ResultSet rs = st.executeQuery(
-					"SELECT date, description, low, high FROM WEATHERGLOBANT.FORECAST WHERE ID='" + id + "'");
-			System.out.println("\n|Clima para los proximos 5 dias: |");
-			System.out.println("");
+					"SELECT date, description, low, high FROM WEATHERGLOBANT.FORECAST");
+			lista = new ArrayList<Forecast>();
+			
+			Forecast.Builder forecastBuilder = new Forecast.Builder();
 			while (rs.next()) {
-
-				System.out.println(rs.getDate(1) + " " + rs.getString(2) + " " + "Min: " + rs.getFloat(3) + " "
-						+ "Max: " + rs.getFloat(4));
-
+				
+				lista.add(forecastBuilder.date(rs.getDate(1)).dayDescription(rs.getString(2)).low(rs.getFloat(3))
+						.high(rs.getFloat(4)).build());
+				
 			}
+		}
+				
+
+			
+			
+			
 
 		} catch (SQLException e) {
 			System.out.println("No se pueden obtener los datos del forecast. Error: " + e.getMessage());
-		} catch (Exception e) {
-			System.out.println("No se pueden obtener los datos del forecast. Error: Base de datos en uso.");
 		}
 
-		finally {
-			try {
-				conexion.setConexion().close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				System.out.println("No se puede cerrar la conexion. " + e.getMessage());
-			} catch (Exception e) {
-				System.out.println("Verifique que la BD H2 no se encuentre en uso");
-			}
-		}
+		
+		return lista;
 
 	}
 
@@ -167,6 +180,8 @@ public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {
 		return sql;
 
 	}
+
+
 
 
 

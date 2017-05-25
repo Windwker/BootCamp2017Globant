@@ -23,7 +23,8 @@ public class Conditions{
 	private float pressure;
 	private float visibility;
 
-
+	public Conditions() {
+	}
 
 	public Conditions(Builder conditionBuilder) {
 		this.date = conditionBuilder.date;
