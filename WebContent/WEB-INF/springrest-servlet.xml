@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jaxws="http://cxf.apache.org/jaxws"
-	xsi:schemaLocation="http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxrs-client="http://cxf.apache.org/jaxrs-client"
+	xsi:schemaLocation="http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+                           http://cxf.apache.org/jaxrs-client http://cxf.apache.org/schemas/jaxrs-client.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
-<jaxws:client id="yahooWeather"
-                  serviceClass="com.javieralvarez.services.WeatherYahooServiceImpl"
-                  address="https://query.yahooapis.com/"/>
+	<context:component-scan base-package="com.javieralvarez"></context:component-scan>
+	<jaxrs-client:client id="wYSI"
+		serviceClass="com.javieralvarez.services.WYSI"
+		address="https://query.yahooapis.com/">
+
+	<jaxrs-client:headers>
+		<entry key="Accept" value="application/json" />
+	</jaxrs-client:headers>
+</jaxrs-client:client>
 
 </beans>

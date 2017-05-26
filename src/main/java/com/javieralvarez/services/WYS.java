@@ -1,5 +1,5 @@
 package com.javieralvarez.services;
 
-public class WeatherYahooServiceImpl {
+public interface WYS {
 
 }
