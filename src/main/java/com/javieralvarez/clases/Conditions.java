@@ -1,10 +1,8 @@
 package com.javieralvarez.clases;
 
-import java.util.Date;
-
 public class Conditions {
 
-	private Date date;
+	private String date;
 	private String dayDescription;
 	private float temp;
 	private float chill;
@@ -14,6 +12,8 @@ public class Conditions {
 	private float humidity;
 	private float pressure;
 	private float visibility;
+	private String country;
+	private String city;
 
 	public Conditions() {
 	}
@@ -29,11 +29,12 @@ public class Conditions {
 		this.humidity = conditionBuilder.humidity;
 		this.pressure = conditionBuilder.pressure;
 		this.visibility = conditionBuilder.visibility;
-
+		this.country = conditionBuilder.country;
+		this.city = conditionBuilder.city;
 	}
 
 	public static class Builder {
-		private Date date;
+		private String date;
 		private String dayDescription;
 		private float temp;
 		private float chill;
@@ -43,8 +44,10 @@ public class Conditions {
 		private float humidity;
 		private float pressure;
 		private float visibility;
+		private String country;
+		private String city;
 
-		public Builder date(Date date) {
+		public Builder date(String date) {
 			this.date = date;
 			return this;
 		}
@@ -94,16 +97,34 @@ public class Conditions {
 			return this;
 		}
 
+		public Builder country(String country) {
+			this.country = country;
+			return this;
+		}
+
+		public Builder city(String city) {
+			this.city = city;
+			return this;
+		}
+
 		public Conditions build() {
 			return new Conditions(this);
 		}
 	}
 
-	public Date getDate() {
+	public String getCountry() {
+		return country;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

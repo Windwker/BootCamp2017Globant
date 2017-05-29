@@ -10,11 +10,11 @@ public class Forecast {
 
 
 
-	private Date date;
+	private String date;
 	private float high, low;
 
 	private String dayDescription;
-
+	private String city,country;
 
 	public Forecast() {
 	}
@@ -24,14 +24,17 @@ public class Forecast {
 		this.dayDescription = ForecastBuilder.dayDescription;
 		this.low = ForecastBuilder.low;
 		this.high = ForecastBuilder.high;
+		this.city=ForecastBuilder.city;
+		this.country=ForecastBuilder.country;
 	}
 
 	public static class Builder {
-		private Date date;
+		private String date;
 		private float high, low;
 		private String dayDescription;
+		private String city,country;
 
-		public Builder date(Date date) {
+		public Builder date(String date) {
 			this.date = date;
 			return this;
 		}
@@ -51,6 +54,16 @@ public class Forecast {
 			return this;
 		}
 		
+		public Builder city(String city){
+			this.city=city;
+			return this;
+		}
+		
+		public Builder country(String country){
+			this.country=country;
+			return this;
+		}
+		
 		  public Forecast build(){
 	            return new Forecast(this);
 	        }
@@ -59,7 +72,7 @@ public class Forecast {
 	
 	
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
@@ -73,6 +86,14 @@ public class Forecast {
 
 	public String getDayDescription() {
 		return dayDescription;
+	}
+	
+	public String getCity(){
+		return city;
+	}
+	
+	public String getCountry(){
+		return country;
 	}
 
 }

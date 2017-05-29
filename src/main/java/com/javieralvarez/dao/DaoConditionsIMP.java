@@ -34,11 +34,11 @@ private Conexion conexion;
 		try{
 			Statement st = conexion.setConexion().createStatement();
 			PreparedStatement ps = null;
-			Format formatter = new SimpleDateFormat("yyyy-MM-dd");
-			String s = formatter.format(conditions.getDate());
+			//Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+			//String s = formatter.format(conditions.getDate());
 			
-			ps = conexion.setConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.CURRENTCONDITIONS (DATE,DESCRIPTION,TEMP,CHILL,WINDSPEED,SUNRISE,SUNSET,HUMIDITY,PRESSURE,VISIBILITY) VALUES (?,?,?,?,?,?,?,?,?,?)");
-			ps.setString(1, s);
+			ps = conexion.setConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.CURRENTCONDITIONS (DATE,DESCRIPTION,TEMP,CHILL,WINDSPEED,SUNRISE,SUNSET,HUMIDITY,PRESSURE,VISIBILITY,COUNTRY,CITY) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+			ps.setString(1, conditions.getDate());
 			ps.setString(2, conditions.getDayDescription());
 			ps.setFloat(3, conditions.getTemp());
 			ps.setFloat(4, conditions.getChill());
@@ -48,6 +48,8 @@ private Conexion conexion;
 			ps.setFloat(8, conditions.getHumidity());
 			ps.setFloat(9, conditions.getPressure());
 			ps.setFloat(10, conditions.getVisibility());
+			ps.setString(11, conditions.getCountry());
+			ps.setString(12, conditions.getCity());
 		
 			ps.execute();
 			
@@ -70,7 +72,7 @@ private Conexion conexion;
 		try{
 			
 			PreparedStatement ps = conexion.setConexion().prepareStatement("UPDATE WEATHERGLOBANT.CURRENTCONDITIONS SET date=?,description=?,temp=?,chill=?,windspeed=?,sunrise=?,sunset=?,humidity=?,pressure=?,visibility=?,type=? WHERE date=?");
-			ps.setDate(1, new java.sql.Date(conditions.getDate().getTime()));
+			ps.setString(1, conditions.getDate());
 			ps.setString(2, conditions.getDayDescription());
 			ps.setFloat(3, conditions.getTemp());
 			ps.setFloat(4, conditions.getChill());
@@ -81,7 +83,7 @@ private Conexion conexion;
 			ps.setFloat(9, conditions.getPressure());
 			ps.setFloat(10, conditions.getVisibility());
 			ps.setString(11, "CC");
-			ps.setDate(12, new java.sql.Date(conditions.getDate().getTime()));
+			ps.setString(12, conditions.getDate());
 			ps.execute();
 			
 			
@@ -97,7 +99,7 @@ private Conexion conexion;
 		
 	}
 
-	public int verifyBD(Conditions conditions) { // Verifica si ya se encuentra cargado en BD las condiciones del dia.
+	/*public int verifyBD(Conditions conditions) { // Verifica si ya se encuentra cargado en BD las condiciones del dia.
 		
 		
 		Statement st;
@@ -141,7 +143,7 @@ private Conexion conexion;
 		
 		
 	}
-
+*/
 	public List<Conditions> select(String r) {
 		
 		try {
@@ -159,7 +161,7 @@ private Conexion conexion;
 				Conditions.Builder conditionBuilder = new Conditions.Builder();
 				while (rs.next()) {
 					
-					lista.add(conditionBuilder.date(rs.getDate(1)).description(rs.getString(2)).temp(rs.getFloat(3)).st(rs.getFloat(4)).windspeed(rs.getFloat(5))
+					lista.add(conditionBuilder.date(rs.getString(1)).description(rs.getString(2)).temp(rs.getFloat(3)).st(rs.getFloat(4)).windspeed(rs.getFloat(5))
 							.sunrise(rs.getString(6)).sunset(rs.getString(7)).humidity(rs.getFloat(8)).pressure(rs.getFloat(9)).visibility(rs.getFloat(10)).build());
 					
 				}
@@ -171,7 +173,7 @@ private Conexion conexion;
 			Conditions.Builder conditionBuilder = new Conditions.Builder();
 			while (rs.next()) {
 				
-				lista.add(conditionBuilder.date(rs.getDate(1)).description(rs.getString(2)).temp(rs.getFloat(3)).st(rs.getFloat(4)).windspeed(rs.getFloat(5))
+				lista.add(conditionBuilder.date(rs.getString(1)).description(rs.getString(2)).temp(rs.getFloat(3)).st(rs.getFloat(4)).windspeed(rs.getFloat(5))
 						.sunrise(rs.getString(6)).sunset(rs.getString(7)).humidity(rs.getFloat(8)).pressure(rs.getFloat(9)).visibility(rs.getFloat(10)).build());
 				
 			}

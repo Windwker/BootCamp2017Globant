@@ -19,6 +19,8 @@ import com.javieralvarez.clases.Forecast;
 @Repository
 public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {
 	private int id = 0;
+	private String city;
+	private String country;
 	private int sql;
 	List<Forecast> lista;
 	@Autowired
@@ -38,15 +40,24 @@ public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {
 			while (rs.next()) {
 				id = rs.getInt(1);
 			}
+			
+			rs = st.executeQuery("SELECT CITY, COUNTRY FROM WEATHERGLOBANT.CURRENTCONDITIONS WHERE ID='"+id+"'");
+			while(rs.next()){
+				city = rs.getString(1);
+				country = rs.getString(2);
+			}
+			
 			Format formatter = new SimpleDateFormat("yyyy-MM-dd");
-			String s = formatter.format(fc.getDate());
-			ps = conexion.setConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST VALUES (?,?,?,?,?)");
+		
+			ps = conexion.setConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST VALUES (?,?,?,?,?,?,?)");
 
 			ps.setInt(1, id);
-			ps.setString(2, (s));
+			ps.setString(2, fc.getDate());
 			ps.setString(3, fc.getDayDescription());
 			ps.setFloat(4, fc.getLow());
 			ps.setFloat(5, fc.getHigh());
+			ps.setString(6, city);
+			ps.setString(7, country);
 
 			ps.execute(); // ps.close();
 
@@ -75,11 +86,11 @@ public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {
 					"UPDATE WEATHERGLOBANT.FORECAST SET id=?,date=?,description=?, low=?, high=? WHERE date =?");
 
 			ps.setInt(1, id);
-			ps.setDate(2, new java.sql.Date(fc.getDate().getTime()));
+			ps.setString(2, fc.getDate());
 			ps.setString(3, fc.getDayDescription());
 			ps.setFloat(4, fc.getLow());
 			ps.setFloat(5, fc.getHigh());
-			ps.setDate(6, new java.sql.Date(fc.getDate().getTime()));
+			ps.setString(6, fc.getDate());
 
 			ps.execute(); // ps.close();
 
@@ -102,26 +113,27 @@ public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {
 		if(r!=null){
 			
 				ResultSet rs = st.executeQuery(
-						"SELECT date, description, low, high FROM WEATHERGLOBANT.FORECAST WHERE date='"+r+"'");
+						"SELECT date, description, low, high, city, country FROM WEATHERGLOBANT.FORECAST WHERE date='"+r+"'");
 				lista = new ArrayList<Forecast>();
 				
 				Forecast.Builder forecastBuilder = new Forecast.Builder();
 				while (rs.next()) {
 					
-					lista.add(forecastBuilder.date(rs.getDate(1)).dayDescription(rs.getString(2)).low(rs.getFloat(3))
-							.high(rs.getFloat(4)).build());
+					lista.add(forecastBuilder.date(rs.getString(1)).dayDescription(rs.getString(2)).low(rs.getFloat(3))
+							.high(rs.getFloat(4)).city(rs.getString(5)).country(rs.getString(6)).build());
 					
 				}
 		}else{
 			ResultSet rs = st.executeQuery(
-					"SELECT date, description, low, high FROM WEATHERGLOBANT.FORECAST");
+					"SELECT date, description, low, high, city, country FROM WEATHERGLOBANT.FORECAST");
 			lista = new ArrayList<Forecast>();
 			
 			Forecast.Builder forecastBuilder = new Forecast.Builder();
 			while (rs.next()) {
 				
-				lista.add(forecastBuilder.date(rs.getDate(1)).dayDescription(rs.getString(2)).low(rs.getFloat(3))
-						.high(rs.getFloat(4)).build());
+				lista.add(forecastBuilder.date(rs.getString(1)).dayDescription(rs.getString(2)).low(rs.getFloat(3))
+						.high(rs.getFloat(4)).city(rs.getString(5)).country(rs.getString(6)).build());
+				
 				
 			}
 		}
@@ -140,13 +152,13 @@ public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {
 
 	}
 
-	public int verifyBD(Forecast fc) { // Verifica si ya hay un forecast cargado
+	/*public int verifyBD(Forecast fc) { // Verifica si ya hay un forecast cargado
 										// para la fecha.
 		ResultSet rs;
 
 		Statement st;
 		try {
-			Date dia = new java.sql.Date(fc.getDate().getTime());
+			Date dia = fc.getDate());
 			st = conexion.setConexion().createStatement();
 			rs = st.executeQuery("SELECT DATE from WEATHERGLOBANT.FORECAST where DATE ='" + dia + "'");
 
@@ -178,8 +190,8 @@ public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {
 
 		}
 		return sql;
-
-	}
+}
+	*/
 
 
 
