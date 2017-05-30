@@ -13,8 +13,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.javieralvarez.clases.Conexion;
-import com.javieralvarez.clases.Forecast;
+import com.javieralvarez.entity.Conexion;
+import com.javieralvarez.entity.Forecast;
 
 @Repository
 public class DaoForecastIMP implements ForecastAndConditionsDao<Forecast> {

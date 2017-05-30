@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.javieralvarez.clases.Conexion;
-import com.javieralvarez.clases.Forecast;
 import com.javieralvarez.client.YahooWeatherClient;
 import com.javieralvarez.dao.DaoForecastIMP;
-import com.javieralvarez.transformer.Transformer;
+import com.javieralvarez.entity.Conexion;
+import com.javieralvarez.entity.Forecast;
+import com.javieralvarez.transformers.Transformer;
 
 @RestController
 public class ForecastController {

@@ -1,13 +1,13 @@
-package com.javieralvarez.transformer;
+package com.javieralvarez.transformers;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Component;
 
-import com.javieralvarez.clases.Conditions;
-import com.javieralvarez.clases.Forecast;
 import com.javieralvarez.client.YahooWeatherClient;
+import com.javieralvarez.entity.Conditions;
+import com.javieralvarez.entity.Forecast;
 
 @Component
 public class Transformer {

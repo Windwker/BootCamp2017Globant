@@ -1,4 +1,4 @@
-package com.javieralvarez.clases;
+package com.javieralvarez.entity;
 
 public class Conditions {
 
