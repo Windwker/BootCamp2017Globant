@@ -15,7 +15,6 @@ import com.javieralvarez.adapters.YahooWeatherStringToJSONAdapter;
 import com.javieralvarez.dao.DaoForecastImpl;
 import com.javieralvarez.entity.Conexion;
 import com.javieralvarez.entity.Forecast;
-import com.javieralvarez.transformers.Transformer;
 
 @RestController
 public class ForecastController {
@@ -23,8 +22,6 @@ public class ForecastController {
 	Conexion conexion;
 	@Autowired
 	DaoForecastImpl daof;
-	@Autowired
-	Transformer trans;
 	@Autowired
 	YahooWeatherStringToJSONAdapter adapter;
 

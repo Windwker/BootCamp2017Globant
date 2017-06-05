@@ -3,8 +3,6 @@ package com.javieralvarez.transformers;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.javieralvarez.adapters.AdapterFahrenheitToCelcius;
-import com.javieralvarez.adapters.Fahrenheit;
 import com.javieralvarez.entity.Conditions;
 import com.javieralvarez.entity.Forecast;
 

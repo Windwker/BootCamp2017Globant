@@ -21,7 +21,7 @@ public  int checkConnection(){
 		   String s = "http://www.google.com"; 	
 		   URL url = new URL(s);
 			Scanner scan = new Scanner(url.openStream());
-			
+			scan.close();
 	    	
 	    	
 	}catch(java.net.UnknownHostException jnu){
