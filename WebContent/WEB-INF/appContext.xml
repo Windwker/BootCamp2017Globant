@@ -14,7 +14,7 @@
 	<context:annotation-config/>
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
 	
-	<jaxws:client id="cliente"
+	<jaxws:client id="YahooClient"
 		serviceClass="com.javieralvarez.client.YahooWeatherClient"
 		address="https://query.yahooapis.com"/>
 

@@ -1,6 +1,5 @@
 package com.javieralvarez.services;
 
-import javax.annotation.Resource;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.javieralvarez.client.YahooWeatherClient;
+import com.javieralvarez.adapters.YahooWeatherStringToJSONAdapter;
 import com.javieralvarez.dao.DaoConditionsImpl;
 import com.javieralvarez.entity.Conditions;
 import com.javieralvarez.entity.Conexion;
-import com.javieralvarez.proxy.ProxyWeather;
 
 @RestController
 public class ConditionsController {
@@ -22,10 +20,10 @@ public class ConditionsController {
 	Conexion conexion;
 	@Autowired
 	DaoConditionsImpl daoc;
-	@Resource
-	YahooWeatherClient cliente;
+
 	@Autowired
-	ProxyWeather proxyweather;
+	YahooWeatherStringToJSONAdapter adapter;
+	
 
 
 /*	@RequestMapping(value = "/selectconditions", method = RequestMethod.GET)
@@ -39,11 +37,11 @@ public class ConditionsController {
 
 	@RequestMapping(value = "/selectconditions/{city}/{country}", method = RequestMethod.GET, headers = "Accept=application/json")
 	public Response getConditionsDate(@PathVariable("city") String city, @PathVariable("country") String country){
-		if(proxyweather.getConditionsJson(city, country).getDayDescription()==null){
+		if(adapter.getConditions(city, country).getDayDescription()==null){
 			
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}else{
-			return Response.status(Response.Status.OK).entity(proxyweather.getConditionsJson(city, country)).build();
+			return Response.status(Response.Status.OK).entity(adapter.getConditions(city, country)).build();
 				
 		}
 

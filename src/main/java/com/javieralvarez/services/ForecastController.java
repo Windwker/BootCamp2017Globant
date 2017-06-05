@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.javieralvarez.adapters.YahooWeatherStringToJSONAdapter;
 import com.javieralvarez.dao.DaoForecastImpl;
 import com.javieralvarez.entity.Conexion;
 import com.javieralvarez.entity.Forecast;
-import com.javieralvarez.proxy.ProxyWeather;
 import com.javieralvarez.transformers.Transformer;
 
 @RestController
@@ -26,15 +26,15 @@ public class ForecastController {
 	@Autowired
 	Transformer trans;
 	@Autowired
-	ProxyWeather proxyweather;
+	YahooWeatherStringToJSONAdapter adapter;
 
 	@RequestMapping(value = "/selectforecast/{city}/{country}", method = RequestMethod.GET)
 	public Response getForecastDate(@PathVariable("city") String city, @PathVariable("country") String country) {
 		
-		if(proxyweather.getForecastJson(city, country).isEmpty()){
+		if(adapter.getForecast(city, country).isEmpty()){
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}else{
-			return Response.status(Response.Status.OK).entity(proxyweather.getForecastJson(city, country)).build();
+			return Response.status(Response.Status.OK).entity(adapter.getForecast(city, country)).build();
 	
 		}
 		
