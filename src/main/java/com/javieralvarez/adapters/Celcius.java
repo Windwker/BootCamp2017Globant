@@ -1,5 +1,7 @@
 package com.javieralvarez.adapters;
 
 public interface Celcius {
-int getTemperature();
+	float getTemperature();
+
+	void setTemperature(float temp);
 }

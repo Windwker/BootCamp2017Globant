@@ -16,7 +16,7 @@
 	
 	<jaxws:client id="cliente"
 		serviceClass="com.javieralvarez.client.YahooWeatherClient"
-		address="https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20%3D%20466861"/>
+		address="https://query.yahooapis.com"/>
 
 
 </beans>

@@ -1,11 +1,8 @@
 package com.javieralvarez.services;
 
-import java.util.List;
-
 import javax.annotation.Resource;
+import javax.ws.rs.core.Response;
 
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,42 +11,41 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.javieralvarez.client.YahooWeatherClient;
-import com.javieralvarez.dao.DaoConditionsIMP;
+import com.javieralvarez.dao.DaoConditionsImpl;
 import com.javieralvarez.entity.Conditions;
 import com.javieralvarez.entity.Conexion;
-import com.javieralvarez.transformers.Transformer;
+import com.javieralvarez.proxy.ProxyWeather;
 
 @RestController
 public class ConditionsController {
 	@Autowired
 	Conexion conexion;
 	@Autowired
-	DaoConditionsIMP daoc;
-	@Autowired
-	Transformer trans;
+	DaoConditionsImpl daoc;
 	@Resource
 	YahooWeatherClient cliente;
+	@Autowired
+	ProxyWeather proxyweather;
 
-	@RequestMapping(value = "/selectconditions", method = RequestMethod.GET)
+
+/*	@RequestMapping(value = "/selectconditions", method = RequestMethod.GET)
 	public List<Conditions> getConditions() {
 
 		List<Conditions> listado = daoc.select(null);
 
 		return listado;
 
-	}
+	}*/
 
-	@RequestMapping(value = "/selectconditions/{date}", method = RequestMethod.GET, headers = "Accept=application/json")
-	public List<Conditions> getConditionsDate(@PathVariable String date)
-			throws JSONException, ParseException, java.text.ParseException {
-
-		List<Conditions> listado = daoc.select(date);
-		if (listado.isEmpty()) {
-			Conditions r = Transformer.transformConditions(cliente);
-			daoc.insert(r);
+	@RequestMapping(value = "/selectconditions/{city}/{country}", method = RequestMethod.GET, headers = "Accept=application/json")
+	public Response getConditionsDate(@PathVariable("city") String city, @PathVariable("country") String country){
+		if(proxyweather.getConditionsJson(city, country).getDayDescription()==null){
+			
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}else{
+			return Response.status(Response.Status.OK).entity(proxyweather.getConditionsJson(city, country)).build();
+				
 		}
-		listado = daoc.select(date);
-		return listado;
 
 	}
 

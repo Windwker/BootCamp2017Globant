@@ -1,5 +1,8 @@
 package com.javieralvarez.entity;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Conditions {
 
 	private String date;
@@ -126,6 +129,18 @@ public class Conditions {
 
 	public void setDate(String date) {
 		this.date = date;
+	}
+	
+	public void setTemp(float temp){
+		this.temp=temp;
+	}
+	
+	public void setWindspeed(float speed){
+		this.windSpeed=speed;
+	}
+	
+	public void setChill(float chill){
+		this.chill=chill;
 	}
 
 	public String getDayDescription() {

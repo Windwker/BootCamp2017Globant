@@ -1,11 +1,9 @@
 package com.javieralvarez.services;
 
-import java.util.List;
+import java.util.ArrayList;
 
-import javax.annotation.Resource;
+import javax.ws.rs.core.Response;
 
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.javieralvarez.client.YahooWeatherClient;
-import com.javieralvarez.dao.DaoForecastIMP;
+import com.javieralvarez.dao.DaoForecastImpl;
 import com.javieralvarez.entity.Conexion;
 import com.javieralvarez.entity.Forecast;
+import com.javieralvarez.proxy.ProxyWeather;
 import com.javieralvarez.transformers.Transformer;
 
 @RestController
@@ -24,36 +22,30 @@ public class ForecastController {
 	@Autowired
 	Conexion conexion;
 	@Autowired
-	DaoForecastIMP daof;
+	DaoForecastImpl daof;
 	@Autowired
 	Transformer trans;
-	@Resource
-	YahooWeatherClient cliente;
+	@Autowired
+	ProxyWeather proxyweather;
 
-	@RequestMapping(value = "/selectforecast", method = RequestMethod.GET)
-	public List<Forecast> getForecast() {
-
-		List<Forecast> listado = daof.select(null);
-
-		return listado;
-
-	}
-
-	@RequestMapping(value = "/selectforecast/{date}", method = RequestMethod.GET)
-	public List<Forecast> getForecastDate(@PathVariable String date) throws JSONException, ParseException, java.text.ParseException {
-
-		List<Forecast> listado = daof.select(date);
-		if (listado.isEmpty()) {
-			Forecast f = Transformer.transformForecast(cliente);
-			daof.insert(f);
+	@RequestMapping(value = "/selectforecast/{city}/{country}", method = RequestMethod.GET)
+	public Response getForecastDate(@PathVariable("city") String city, @PathVariable("country") String country) {
+		
+		if(proxyweather.getForecastJson(city, country).isEmpty()){
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}else{
+			return Response.status(Response.Status.OK).entity(proxyweather.getForecastJson(city, country)).build();
+	
 		}
-		return listado;
-
+		
 	}
 
-	@RequestMapping(value = "/insertforecast", method = RequestMethod.POST)
-	public void insertForecast(@RequestBody Forecast f) {
-		daof.insert(f);
+	@RequestMapping(value = "/insertforecast", method = RequestMethod.POST,  headers = "Accept=application/json")
+	public void insertForecast(@RequestBody ArrayList<Forecast> f) {
+		
+		for(int i = 0; i < f.size();i++){
+		daof.insert(f.get(i));
+		}
 
 	}
 }

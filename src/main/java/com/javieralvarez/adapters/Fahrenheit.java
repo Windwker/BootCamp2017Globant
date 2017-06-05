@@ -1,5 +1,6 @@
 package com.javieralvarez.adapters;
 
 public interface Fahrenheit {
-int getTemperature();
+float getTemperature();
+void setTemperature(float temp);
 }

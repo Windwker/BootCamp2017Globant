@@ -1,8 +1,6 @@
 package com.javieralvarez.entity;
 
 
-import java.util.Date;
-
 import org.springframework.stereotype.Component;
 @Component
 public class Forecast {
@@ -76,6 +74,14 @@ public class Forecast {
 		return date;
 	}
 
+	public void setLow(float low){
+		this.low=low;
+	}
+	
+	public void setHigh(float high){
+		this.high=high;
+	}
+	
 	public float getHigh() {
 		return high;
 	}
