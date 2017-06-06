@@ -6,13 +6,10 @@ import org.springframework.stereotype.Component;
 public class KmhImpl implements KMH {
 private float speed;
 
-/*	public KmhImpl()
-	{
-		
-	}
+
 	
-	public KmhImpl(float speed){
-		
+/*	public KmhImpl(float speed){
+		this.speed=speed;
 	}*/
 
 	public float getSpeed() {

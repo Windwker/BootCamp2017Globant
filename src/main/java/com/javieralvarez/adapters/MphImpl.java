@@ -5,6 +5,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class MphImpl implements MPH {
 private float speed;
+
+
+/*	public MphImpl(float speed){
+		this.speed=speed;
+	}*/
 	public float getSpeed() {
 		// TODO Auto-generated method stub
 		return speed;
