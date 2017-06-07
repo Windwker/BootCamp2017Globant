@@ -28,7 +28,7 @@ public class DaoForecastImpl implements ForecastAndConditionsDao<Forecast> {
 	public void insert(Forecast fc) { // Inserta forecast en BD.
 
 		try {
-			Statement st = conexion.setConexion().createStatement();
+			Statement st = conexion.getConexion().createStatement();
 			PreparedStatement ps = null;
 			ResultSet rs = st.executeQuery("SELECT ID FROM WEATHERGLOBANT.CURRENTCONDITIONS");
 
@@ -36,15 +36,15 @@ public class DaoForecastImpl implements ForecastAndConditionsDao<Forecast> {
 				id = rs.getInt(1);
 			}
 
-			rs = st.executeQuery("SELECT CITY, COUNTRY FROM WEATHERGLOBANT.CURRENTCONDITIONS WHERE ID='" + id + "'");
+			rs = st.executeQuery("SELECT CITY, COUNTRY FROM WEATHERGLOBANT.CURRENTCONDITIONS WHERE ID='" + id + "'"); /// VERIFICAR!!!!
 			while (rs.next()) {
 				city = rs.getString(1);
 				country = rs.getString(2);
 			}
 
-			Format formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-			ps = conexion.setConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST VALUES (?,?,?,?,?,?,?)");
+
+			ps = conexion.getConexion().prepareStatement("INSERT INTO WEATHERGLOBANT.FORECAST VALUES (?,?,?,?,?,?,?)");
 
 			ps.setInt(1, id);
 			ps.setString(2, fc.getDate());
@@ -69,7 +69,7 @@ public class DaoForecastImpl implements ForecastAndConditionsDao<Forecast> {
 		// TODO Auto-generated method stub
 
 		try {
-			Statement st = conexion.setConexion().createStatement();
+			Statement st = conexion.getConexion().createStatement();
 			PreparedStatement ps = null;
 			ResultSet rs = st.executeQuery("SELECT ID FROM WEATHERGLOBANT.CURRENTCONDITIONS");
 
@@ -77,17 +77,17 @@ public class DaoForecastImpl implements ForecastAndConditionsDao<Forecast> {
 				id = rs.getInt(1);
 			}
 
-			ps = conexion.setConexion().prepareStatement(
-					"UPDATE WEATHERGLOBANT.FORECAST SET id=?,date=?,description=?, low=?, high=? WHERE date =? AND city=? AND country=?");
+			ps = conexion.getConexion().prepareStatement(
+					"UPDATE WEATHERGLOBANT.FORECAST SET date=?,description=?, low=?, high=? WHERE date =? AND city=? AND country=?");
 
-			ps.setInt(1, id);
-			ps.setString(2, fc.getDate());
-			ps.setString(3, fc.getDayDescription());
-			ps.setFloat(4, fc.getLow());
-			ps.setFloat(5, fc.getHigh());
-			ps.setString(6, fc.getDate());
-			ps.setString(7, fc.getCity());
-			ps.setString(8, fc.getCountry());
+		
+			ps.setString(1, fc.getDate());
+			ps.setString(2, fc.getDayDescription());
+			ps.setFloat(3, fc.getLow());
+			ps.setFloat(4, fc.getHigh());
+			ps.setString(5, fc.getDate());
+			ps.setString(6, fc.getCity());
+			ps.setString(7, fc.getCountry());
 
 			ps.execute(); // ps.close();
 
@@ -105,7 +105,7 @@ public class DaoForecastImpl implements ForecastAndConditionsDao<Forecast> {
 			lista = new ArrayList<Forecast>();
 
 			Forecast.Builder forecastBuilder = new Forecast.Builder();
-			Statement st = conexion.setConexion().createStatement();
+			Statement st = conexion.getConexion().createStatement();
 
 
 			ResultSet rs = st.executeQuery(
@@ -122,42 +122,12 @@ public class DaoForecastImpl implements ForecastAndConditionsDao<Forecast> {
 			}
 		
 		} catch (SQLException e) {
-			System.out.println("No se pueden obtener los datos del forecast. Error: " + e.getMessage());
+			
 		}
 
 		return lista;
 
 	}
 
-	/*
-	 * public int verifyBD(Forecast fc) { // Verifica si ya hay un forecast
-	 * cargado // para la fecha. ResultSet rs;
-	 * 
-	 * Statement st; try { Date dia = fc.getDate()); st =
-	 * conexion.setConexion().createStatement(); rs =
-	 * st.executeQuery("SELECT DATE from WEATHERGLOBANT.FORECAST where DATE ='"
-	 * + dia + "'");
-	 * 
-	 * while (rs.next() && sql != 1) { dia = new
-	 * java.sql.Date(fc.getDate().getTime());
-	 * 
-	 * SimpleDateFormat df = new SimpleDateFormat("DDMMYYYY");
-	 * 
-	 * if (df.format(dia).equals(df.format(rs.getDate(1)))) { sql = 1;
-	 * 
-	 * } else { sql = 0;
-	 * 
-	 * } }
-	 * 
-	 * if (sql == 1) {
-	 * System.out.println("\n-Se ejecuta update al Forecast Existente"); } else
-	 * { System.out.println("\n-Se Inserta un nuevo Forecast"); }
-	 * 
-	 * } catch (SQLException e) { // TODO Auto-generated catch block
-	 * System.out.println(e.getMessage()); } catch (Exception e) { // TODO
-	 * Auto-generated catch block
-	 * 
-	 * } return sql; }
-	 */
 
 }

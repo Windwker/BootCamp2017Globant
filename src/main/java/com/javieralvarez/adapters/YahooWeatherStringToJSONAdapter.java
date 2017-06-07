@@ -35,11 +35,21 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather{
 	MphImpl mph;
 	@Autowired
 	Proxy proxy;
+	@Autowired
+	Validations validateStatus;
 
-	Date date = new Date();
+	
+	Date today = new Date();
+	
+			
 	SimpleDateFormat df = new SimpleDateFormat("dd MMM YYYY");
-	String auxDate = (df.format(date));
-	Validations validateStatus = new Validations();
+	
+	String  auxToday = (df.format(today));
+	
+	
+	
+	
+
 	
 	public Conditions getConditions(String city, String country) {
 		String city1 = city;
@@ -87,33 +97,29 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather{
 
 		} else if (dbStatus == 1) {// NO HAY CONEXION CON EL ENDPOINT. VERIFICA
 									// HAYA CONEXION CON DB LOCAL.
-			System.out.println("No hay conexion con internet, usando BD.");
+
 			try {
 
-				condition = daoc.select(auxDate, city, country).get(0);
+				condition = daoc.select(auxToday, city, country).get(0);
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
 		} else {
-			System.out.println("No hay conexion con db ni con internet");// NO
-																			// Hay
-																			// conexion
-																			// con
-																			// DB
-																			// ni
-																			// Internet.
-
+			
 		}
 		return condition;
 	}
 
 	public List<Forecast> getForecast(String city, String country) {
 		// TODO Auto-generated method stub
+		
+
+		
 		List<Forecast> listado = new ArrayList<Forecast>();
-		int conexion = validateStatus.checkConnection();
+		int connectionStatus = validateStatus.checkConnection();
 		int dbStatus = validateStatus.checkDBStatus();
 
-		if (conexion == 1) {
+		if (connectionStatus == 1) {
 
 			String query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=";
 			String cityURL = city;
@@ -152,7 +158,17 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather{
 		}
 
 		else if (dbStatus == 1) {
-			listado = daof.select(auxDate, city, country);
+
+			
+			for(int i = 1;i<6;i++){
+				Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24)*i);
+				String auxTomorrow =(df.format(tomorrow));
+				try{
+				listado.add(daof.select(auxTomorrow, city, country).get(0));
+				}catch(Exception e){
+					
+				}
+				}
 		} else {
 		}
 

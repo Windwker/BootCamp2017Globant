@@ -25,6 +25,18 @@ public class ForecastController {
 	@Autowired
 	YahooWeatherStringToJSONAdapter adapter;
 
+	
+	@RequestMapping(value = "/selectforecast",method = RequestMethod.GET)
+	public Response getForecast(){
+		if(adapter.getForecast("Cordoba", "Argentina").isEmpty()){
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}else{
+			return Response.status(Response.Status.OK).entity(adapter.getForecast("Cordoba", "Argentina")).build();
+	
+		}
+	}
+	
+	
 	@RequestMapping(value = "/selectforecast/{city}/{country}", method = RequestMethod.GET)
 	public Response getForecastDate(@PathVariable("city") String city, @PathVariable("country") String country) {
 		
@@ -44,5 +56,11 @@ public class ForecastController {
 		daof.insert(f.get(i));
 		}
 
+	}
+	@RequestMapping(value = "/updateforecast", method = RequestMethod.PUT, headers = "Accept=application/json")
+	public void updateForecast(@RequestBody ArrayList<Forecast> f){
+		for(int i = 0; i < f.size();i++){
+			daof.update(f.get(i));
+			}
 	}
 }

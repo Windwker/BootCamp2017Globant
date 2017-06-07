@@ -14,51 +14,49 @@ import com.javieralvarez.adapters.MphImpl;
 
 import junit.framework.Assert;
 
-
 public class AdapterTest {
 	@Test
-	public void adaptFahrenheitToCelciusTest(){
+	public void adaptFahrenheitToCelciusTest() {
 		float tempTry = (float) 15.555555;
 		FahrenheitImpl f = new FahrenheitImpl();
 		f.setTemperature(60);
 		AdapterFahrenheitToCelcius adapter = new AdapterFahrenheitToCelcius(f);
 		Assert.assertEquals(tempTry, adapter.getTemperature());
-		
-		
+
 	}
-	
+
 	@Test
-	public void adaptMPHtoKMHtest(){
+	public void adaptMPHtoKMHtest() {
 		float speedTry = (float) 241.401;
 		MphImpl m = new MphImpl();
 		m.setSpeed(150);
 		AdapterMPHtoKMH adapter = new AdapterMPHtoKMH(m);
 		Assert.assertEquals(speedTry, adapter.getSpeed());
 	}
-	
+
 	@Test
-	public void adaptFahrenheitToCelciusEasyMockTest(){
+	public void adaptFahrenheitToCelciusEasyMockTest() {
 		float tempTry = 20;
 		Fahrenheit f = EasyMock.createMock(Fahrenheit.class);
-		EasyMock.expect(f.getTemperature()).andReturn((float)68);
+		EasyMock.expect(f.getTemperature()).andReturn((float) 68).times(1);
 		EasyMock.replay(f);
 		Celcius a = new AdapterFahrenheitToCelcius(f);
-		float adaptedTemp = a.getTemperature();
-		Assert.assertEquals(tempTry, adaptedTemp);
+		float tempAdapted = a.getTemperature();
+		Assert.assertEquals(tempTry, tempAdapted);
 		EasyMock.verify(f);
-		
+
 	}
-	
+
 	@Test
-	public void adaptMPHtoKMHEasyMocktest(){
-		float speedTry = (float)(241.401);
+	public void adaptMPHtoKMHEasyMocktest() {
+		float speedTry = (float) (241.401);
 		MPH m = EasyMock.createMock(MPH.class);
-		EasyMock.expect(m.getSpeed()).andReturn((float)150);
+		EasyMock.expect(m.getSpeed()).andReturn((float) 150).times(1);
 		EasyMock.replay(m);
 		KMH k = new AdapterMPHtoKMH(m);
-		float adaptedSpeed = k.getSpeed();
-		Assert.assertEquals(speedTry, adaptedSpeed);
+		float speedAdapted = k.getSpeed();
+		Assert.assertEquals(speedTry, speedAdapted);
+		EasyMock.verify(m);
 	}
-	
-	
+
 }

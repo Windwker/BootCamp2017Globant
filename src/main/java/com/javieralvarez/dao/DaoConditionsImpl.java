@@ -23,12 +23,12 @@ public class DaoConditionsImpl implements ForecastAndConditionsDao<Conditions> {
 
 	public void insert(Conditions conditions) { // Ejecuta el insert en BD.
 		try {
-			Statement st = conexion.setConexion().createStatement();
+		
 			PreparedStatement ps = null;
 
 
-			ps = conexion.setConexion().prepareStatement(
-					"INSERT INTO WEATHERGLOBANT.CURRENTCONDITIONS (DATE,DESCRIPTION,TEMP,CHILL,WINDSPEED,SUNRISE,SUNSET,HUMIDITY,PRESSURE,VISIBILITY,CITY,COUNTRY) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+			ps = conexion.getConexion().prepareStatement(
+					"INSERT INTO WEATHERGLOBANT.CURRENTCONDITIONS (DATE,DESCRIPTION,TEMP,CHILL,WINDSPEED,SUNRISE,SUNSET,HUMIDITY,PRESSURE,VISIBILITY,CITY,COUNTRY,TYPE) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			ps.setString(1, conditions.getDate());
 			ps.setString(2, conditions.getDayDescription());
 			ps.setFloat(3, conditions.getTemp());
@@ -41,11 +41,12 @@ public class DaoConditionsImpl implements ForecastAndConditionsDao<Conditions> {
 			ps.setFloat(10, conditions.getVisibility());
 			ps.setString(11, conditions.getCity());
 			ps.setString(12, conditions.getCountry());
+			ps.setString(13, "CC");
 
 			ps.execute();
 
 		} catch (SQLException e) {
-			System.out.println("No se pueden agregar condiciones actuales. Error: " + e.getMessage());
+			
 		}
 
 
@@ -55,7 +56,7 @@ public class DaoConditionsImpl implements ForecastAndConditionsDao<Conditions> {
 
 		try {
 
-			PreparedStatement ps = conexion.setConexion().prepareStatement(
+			PreparedStatement ps = conexion.getConexion().prepareStatement(
 					"UPDATE WEATHERGLOBANT.CURRENTCONDITIONS SET date=?,description=?,temp=?,chill=?,windspeed=?,sunrise=?,sunset=?,humidity=?,pressure=?,visibility=?,type=? WHERE date=? AND city=? AND country=?");
 			ps.setString(1, conditions.getDate());
 			ps.setString(2, conditions.getDayDescription());
@@ -74,7 +75,7 @@ public class DaoConditionsImpl implements ForecastAndConditionsDao<Conditions> {
 			ps.execute();
 
 		} catch (SQLException e) {
-			System.out.println("No se pueden actualizar las condiciones actuales. Error : " + e.getMessage());
+			
 
 		} catch (Exception e) {
 			System.out.println("No se pueden actualizar las condiciones actuales. Error: Base de datos en uso.");
@@ -82,50 +83,12 @@ public class DaoConditionsImpl implements ForecastAndConditionsDao<Conditions> {
 
 	}
 
-	/*
-	 * public int verifyBD(Conditions conditions) { // Verifica si ya se
-	 * encuentra cargado en BD las condiciones del dia.
-	 * 
-	 * 
-	 * Statement st; try { st = conexion.setConexion().createStatement(); Date
-	 * dia = new java.sql.Date(conditions.getDate().getTime()); ResultSet rs =
-	 * st.
-	 * executeQuery("SELECT date FROM WEATHERGLOBANT.CURRENTCONDITIONS where date = '"
-	 * + dia +"'");
-	 * 
-	 * while (rs.next()) {
-	 * 
-	 * Date d2 = rs.getDate(1); SimpleDateFormat df = new
-	 * SimpleDateFormat("DDMMYYYY"); if (df.format(d2).equals(df.format(dia))) {
-	 * sql = 1; System.out.println();
-	 * 
-	 * 
-	 * } else { sql = 0;
-	 * 
-	 * }
-	 * 
-	 * }
-	 * 
-	 * if(sql==0){
-	 * System.out.println("\n-Se ejecuta insert de condiciones actuales.");
-	 * }else{
-	 * System.out.println("\n-Se ejecuta update a las condiciones actuales."); }
-	 * 
-	 * 
-	 * 
-	 * } catch (SQLException e) { // TODO Auto-generated catch block
-	 * System.out.println(e.getMessage()); } catch (Exception e) { // TODO
-	 * Auto-generated catch block
-	 * System.out.println("Error: Base de datos en uso"); } return sql;
-	 * 
-	 * 
-	 * }
-	 */
-	public List<Conditions> select(String date, String city, String country) {
+
+	public List<Conditions> select(String date, String city, String country) { // Ejecuta Select de BD
 		List<Conditions> lista = new ArrayList<Conditions>();
 		try {
 
-			Statement st = conexion.setConexion().createStatement();
+			Statement st = conexion.getConexion().createStatement();
 
 			ResultSet rs = st.executeQuery(
 					"SELECT date, description, temp, chill, windspeed, sunrise, sunset, humidity, pressure, visibility, city, country FROM WEATHERGLOBANT.CURRENTCONDITIONS WHERE DATE='"
@@ -133,7 +96,7 @@ public class DaoConditionsImpl implements ForecastAndConditionsDao<Conditions> {
 
 
 			
-//System.out.println(rs.getString(1));
+
 
 			Conditions.Builder conditionBuilder = new Conditions.Builder();
 			while (rs.next()) {
@@ -146,9 +109,9 @@ public class DaoConditionsImpl implements ForecastAndConditionsDao<Conditions> {
 
 			
 		}catch	(IndexOutOfBoundsException iobe){
-			System.out.println(iobe.getMessage());
+			
 		} catch (SQLException e) {
-			System.out.println("No se pueden obtener los datos de las condiciones. Error: " + e.getMessage());
+			
 		}
 
 		return lista;

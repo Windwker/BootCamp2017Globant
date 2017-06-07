@@ -26,14 +26,18 @@ public class ConditionsController {
 	
 
 
-/*	@RequestMapping(value = "/selectconditions", method = RequestMethod.GET)
-	public List<Conditions> getConditions() {
+	@RequestMapping(value = "/selectconditions", method = RequestMethod.GET)
+	public Response getConditions() {
 
-		List<Conditions> listado = daoc.select(null);
+		if(adapter.getConditions("Cordoba", "Argentina").getDayDescription()==null){
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}else{
+			return Response.status(Response.Status.OK).entity(adapter.getConditions("Cordoba", "Argentina")).build();
+		}
+		
+		
 
-		return listado;
-
-	}*/
+	}
 
 	@RequestMapping(value = "/selectconditions/{city}/{country}", method = RequestMethod.GET, headers = "Accept=application/json")
 	public Response getConditionsDate(@PathVariable("city") String city, @PathVariable("country") String country){
@@ -51,5 +55,12 @@ public class ConditionsController {
 	public void insertConditions(@RequestBody Conditions c) {
 		daoc.insert(c);
 	}
+	
+	@RequestMapping(value = "/updateconditions", method = RequestMethod.PUT)
+	public void updateConditions(@RequestBody Conditions c){
+		daoc.update(c);
+	}
+	
+	
 
 }

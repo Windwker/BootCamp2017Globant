@@ -2,17 +2,17 @@ package com.javieralvarez.validations;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.javieralvarez.entity.Conexion;
-
+@Component
 public class Validations {
 	@Autowired
-	Conexion con;
+	private Conexion conexion;
 	 
 	///// Valida si se puede establecer conexion.
 public  int checkConnection(){
@@ -25,6 +25,7 @@ public  int checkConnection(){
 	    	
 	    	
 	}catch(java.net.UnknownHostException jnu){
+		System.out.println("Warning: No internet connection available");
 		conexion = 0;
 		
 	}
@@ -44,18 +45,23 @@ public  int checkConnection(){
 
 public  int checkDBStatus(){
 	int dbStatus = 1;
-	try {
-		Statement st = con.setConexion().createStatement();
-		st.executeQuery("SELECT * FROM WEATHERGLOBANT.CURRENTCONDITIONS");
-	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.getMessage();
-		dbStatus = 0;
-
-	}catch (Exception e){
-
-	}
 	
+		
+		
+		try {
+
+			
+			Statement statement = conexion.getConexion().createStatement();
+			statement.executeQuery("SELECT * FROM WEATHERGLOBANT.CURRENTCONDITIONS");
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+
+			System.out.println("Warning: No db connection available");
+		dbStatus = 0;
+		}
+
+
 	return dbStatus;
 
 }

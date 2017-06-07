@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.h2.jdbc.JdbcSQLException;
 import org.springframework.stereotype.Component;
 @Component
 public class Conexion {
@@ -24,18 +23,21 @@ public class Conexion {
 	
 
 
-public Connection setConexion(){
+public Connection getConexion(){
+
 	try {
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		 con = DriverManager.getConnection(urlmysql,usrmysql,pswmysql);
-		 
-	} catch (JdbcSQLException e) {
-		System.out.println("Error: JDBC: " + e.getMessage());
+
+/*	} catch (JdbcSQLException e) {
+		System.out.println("Error: JDBC: " + e.getMessage());*/
 	
 	} catch (SQLException e) {
+	
 		try {
 			Class.forName("org.h2.Driver");
 			con = DriverManager.getConnection(urlh2, usrh2, pswh2);
+		
 		} catch (ClassNotFoundException e1) {
 			// TODO Auto-generated catch block
 			System.out.println(e1.getMessage());
@@ -47,6 +49,7 @@ public Connection setConexion(){
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
+
 	return con;
 	
 }
