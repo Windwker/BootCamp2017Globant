@@ -26,11 +26,11 @@ public class ConditionsController {
 	
 
 
-	@RequestMapping(value = "/selectconditions", method = RequestMethod.GET)
+	@RequestMapping(value = "/selectconditions", method = RequestMethod.GET, headers = "Accept=application/json")
 	public Response getConditions() {
 
 		if(adapter.getConditions("Cordoba", "Argentina").getDayDescription()==null){
-			return Response.status(Response.Status.NOT_FOUND).build();
+			return Response.status(Response.Status.NOT_FOUND).entity("No current conditions available for Cordoba, Argentina").build();
 		}else{
 			return Response.status(Response.Status.OK).entity(adapter.getConditions("Cordoba", "Argentina")).build();
 		}
@@ -40,10 +40,10 @@ public class ConditionsController {
 	}
 
 	@RequestMapping(value = "/selectconditions/{city}/{country}", method = RequestMethod.GET, headers = "Accept=application/json")
-	public Response getConditionsDate(@PathVariable("city") String city, @PathVariable("country") String country){
+	public Response getConditionsCityCountry(@PathVariable("city") String city, @PathVariable("country") String country){
 		if(adapter.getConditions(city, country).getDayDescription()==null){
 			
-			return Response.status(Response.Status.NOT_FOUND).build();
+			return Response.status(Response.Status.NOT_FOUND).entity("No current conditions available for "+city+','+country+"").build();
 		}else{
 			return Response.status(Response.Status.OK).entity(adapter.getConditions(city, country)).build();
 				

@@ -26,10 +26,10 @@ public class ForecastController {
 	YahooWeatherStringToJSONAdapter adapter;
 
 	
-	@RequestMapping(value = "/selectforecast",method = RequestMethod.GET)
+	@RequestMapping(value = "/selectforecast",method = RequestMethod.GET,headers = "Accept=application/json")
 	public Response getForecast(){
 		if(adapter.getForecast("Cordoba", "Argentina").isEmpty()){
-			return Response.status(Response.Status.NOT_FOUND).build();
+			return Response.status(Response.Status.NOT_FOUND).entity("No Forecast available for Cordoba, Argentina").build();
 		}else{
 			return Response.status(Response.Status.OK).entity(adapter.getForecast("Cordoba", "Argentina")).build();
 	
@@ -38,10 +38,10 @@ public class ForecastController {
 	
 	
 	@RequestMapping(value = "/selectforecast/{city}/{country}", method = RequestMethod.GET)
-	public Response getForecastDate(@PathVariable("city") String city, @PathVariable("country") String country) {
+	public Response getForecastCityCountry(@PathVariable("city") String city, @PathVariable("country") String country) {
 		
 		if(adapter.getForecast(city, country).isEmpty()){
-			return Response.status(Response.Status.NOT_FOUND).build();
+			return Response.status(Response.Status.NOT_FOUND).entity("No Forecast available for "+city+','+country+"").build();
 		}else{
 			return Response.status(Response.Status.OK).entity(adapter.getForecast(city, country)).build();
 	
