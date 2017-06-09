@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.javieralvarez.adapters.YahooWeatherStringToJSONAdapter;
+import com.javieralvarez.connection.Conexion;
 import com.javieralvarez.dao.DaoConditionsImpl;
 import com.javieralvarez.entity.Conditions;
-import com.javieralvarez.entity.Conexion;
 
 @RestController
 public class ConditionsController {

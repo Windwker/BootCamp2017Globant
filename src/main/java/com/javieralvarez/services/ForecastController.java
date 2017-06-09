@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.javieralvarez.adapters.YahooWeatherStringToJSONAdapter;
+import com.javieralvarez.connection.Conexion;
 import com.javieralvarez.dao.DaoForecastImpl;
-import com.javieralvarez.entity.Conexion;
 import com.javieralvarez.entity.Forecast;
 
 @RestController

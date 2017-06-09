@@ -9,13 +9,19 @@ import com.javieralvarez.client.YahooWeatherClient;
 @Component
 public class Proxy implements YahooWeatherClient {
 	@Resource
-	YahooWeatherClient YahooClient;
+	YahooWeatherClient yahooClient;
 
+	 
 
 	public String getYahooWeather(String query) {
-		String response = YahooClient.getYahooWeather(query);
+		String response = yahooClient.getYahooWeather(query);
 		
 		return response;
+	}
+	
+	
+	public void setClient(YahooWeatherClient client){
+		this.yahooClient = client;
 	}
 
 }

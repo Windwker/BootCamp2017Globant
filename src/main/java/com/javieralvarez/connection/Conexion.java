@@ -1,4 +1,4 @@
-package com.javieralvarez.entity;
+package com.javieralvarez.connection;
 
 
 
@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 public class Conexion {
 
 	private Connection con;
+	private Conexion conexion;
+	private DriverManager driver;
 	private String urlh2 = "jdbc:h2:/home/javi/Dropbox/GlobantDB";
 	private String usrh2 = "JAVI";
 	private String pswh2 = "1234";
@@ -20,6 +22,16 @@ public class Conexion {
 	private String usrmysql = "root";
 	private String pswmysql = "1234";
 	
+	// TEST ONLY
+
+	
+	public void setDriver(DriverManager driver){
+		this.driver=driver;
+	}
+	
+	public void setConection(Connection con){
+		this.con=con;
+	}
 	
 
 
