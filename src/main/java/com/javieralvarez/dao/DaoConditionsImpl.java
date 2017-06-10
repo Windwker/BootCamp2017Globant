@@ -106,14 +106,15 @@ public class DaoConditionsImpl implements ForecastAndConditionsDao<Conditions> {
 						.humidity(rs.getFloat(8)).pressure(rs.getFloat(9)).visibility(rs.getFloat(10)).city(rs.getString(11)).country(rs.getString(12)).build());
 
 			}
+			
 
 			
-		}catch	(IndexOutOfBoundsException iobe){
-			
-		} catch (SQLException e) {
-			
+		}catch(Exception e){
+			System.out.println(e.getMessage());
 		}
-
+		
+		
+		
 		return lista;
 
 	}

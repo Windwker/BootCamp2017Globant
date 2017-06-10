@@ -74,6 +74,10 @@ public class Forecast {
 		return date;
 	}
 
+	public void setDayDescription(String dayDescription){
+		this.dayDescription=dayDescription;
+	}
+	
 	public void setLow(float low){
 		this.low=low;
 	}

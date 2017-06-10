@@ -15,8 +15,9 @@ import com.javieralvarez.entity.Forecast;
 import com.javieralvarez.proxy.Proxy;
 import com.javieralvarez.transformers.Transformer;
 import com.javieralvarez.validations.Validations;
+
 @Component
-public class YahooWeatherStringToJSONAdapter implements YahooWeather{
+public class YahooWeatherStringToJSONAdapter implements YahooWeather {
 	@Autowired
 	private Conditions condition;
 	@Autowired
@@ -38,23 +39,14 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather{
 	@Autowired
 	Validations validateStatus;
 
-	
 	Date today = new Date();
-	
-			
+
 	SimpleDateFormat df = new SimpleDateFormat("dd MMM YYYY");
-	
-	String  auxToday = (df.format(today));
-	
-	
-	
-	
 
-	
+	String auxToday = (df.format(today));
+
 	public Conditions getConditions(String city, String country) {
-		String city1 = city;
-		String country1 = country;
-
+		int errorDB = 0;
 		int conexion = validateStatus.checkConnection();
 		int dbStatus = validateStatus.checkDBStatus();
 
@@ -62,36 +54,47 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather{
 
 			try {
 				String query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=";
-				String cityURL = city1;
-				String countryURL = country1;
 
-				String path = query + "\"" + cityURL + "," + countryURL + "\")";
+				String path = query + "\"" + city + "," + country + "\")";
 
 				try {
-					String result = proxy.getYahooWeather(path);
-					condition = Transformer.transformConditions(result);
-					fahrenheit.setTemperature(condition.getTemp());
-					condition.setTemp(adapterTemp.getTemperature());
-					fahrenheit.setTemperature(condition.getChill());
-					condition.setChill(adapterTemp.getTemperature());
-					mph.setSpeed(condition.getWindSpeed());
-					condition.setWindspeed(adapterSpeed.getSpeed());
-					if (dbStatus == 1) { // VERIFICA HAYA CONEXION CON LA BD.
-						List<Conditions> con = daoc.select(condition.getDate(), condition.getCity(),
-								condition.getCountry());
 
-						if (con.size() == 0) {
-							daoc.insert(condition);
-						} else {
-							daoc.update(condition);
+					String result = proxy.getYahooWeather(path);
+					System.out.println(Transformer.verifyJSON(result));
+					if (Transformer.verifyJSON(result) == 0) {
+						condition = Transformer.transformConditions(result);
+
+						fahrenheit.setTemperature(condition.getTemp());
+						condition.setTemp(adapterTemp.getTemperature());
+						fahrenheit.setTemperature(condition.getChill());
+						condition.setChill(adapterTemp.getTemperature());
+						mph.setSpeed(condition.getWindSpeed());
+						condition.setWindspeed(adapterSpeed.getSpeed());
+						if (dbStatus == 1) { // VERIFICA HAYA CONEXION CON LA
+												// BD.
+							List<Conditions> con = daoc.select(condition.getDate(), condition.getCity(),
+									condition.getCountry());
+
+							if (con.size() == 0) {
+								daoc.insert(condition);
+							} else {
+								daoc.update(condition);
+							}
 						}
+
+					} else {
+						condition.setDayDescription(null);
+
 					}
+
 				} catch (Exception e) {
 					System.out.println("Error Conditions");
 					System.out.println(e.getMessage());
 				}
 
 			} catch (Exception e) {
+				// System.out.println("FRUTA");
+				// System.out.println(e.getMessage());
 				System.out.println(e.getMessage());
 			}
 
@@ -102,73 +105,83 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather{
 
 				condition = daoc.select(auxToday, city, country).get(0);
 			} catch (Exception e) {
+				System.out.println("ERROR");
 				System.out.println(e.getMessage());
+				errorDB = 1;
+				return condition;
 			}
+
 		} else {
-			
+
 		}
 		return condition;
 	}
 
 	public List<Forecast> getForecast(String city, String country) {
 		// TODO Auto-generated method stub
-		
 
-		
 		List<Forecast> listado = new ArrayList<Forecast>();
 		int connectionStatus = validateStatus.checkConnection();
 		int dbStatus = validateStatus.checkDBStatus();
 
 		if (connectionStatus == 1) {
+			try {
+				String query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=";
 
-			String query = "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=";
-			String cityURL = city;
-			String countryURL = country;
+				String path = query + "\"" + city + "," + country + "\")";
 
-			String path = query + "\"" + cityURL + "," + countryURL + "\")";
+				String result = proxy.getYahooWeather(path);
+				if (Transformer.verifyJSON(result) == 0) {
+					for (int i = 1; i < 6; i++) {
+						forecast = Transformer.transformForecast(result, i);
 
-			String result = proxy.getYahooWeather(path);
-			for (int i = 1; i < 6; i++) {
-				forecast = Transformer.transformForecast(result, i);
-
-				fahrenheit.setTemperature(forecast.getLow());
-				forecast.setLow((adapterTemp.getTemperature()));
-				fahrenheit.setTemperature(forecast.getHigh());
-				forecast.setHigh((adapterTemp.getTemperature()));
-				listado.add(forecast);
-
-			}
-
-			if (dbStatus == 1) {
-				List<Forecast> listaux = daof.select(listado.get(0).getDate(), listado.get(0).getCity(),
-						listado.get(0).getCountry());
-
-				if (listaux.size() == 0) {
-
-					for (int i = 0; i < listado.size(); i++) {
-						daof.insert(listado.get(i));
+						fahrenheit.setTemperature(forecast.getLow());
+						forecast.setLow((adapterTemp.getTemperature()));
+						fahrenheit.setTemperature(forecast.getHigh());
+						forecast.setHigh((adapterTemp.getTemperature()));
+						listado.add(forecast);
 
 					}
+
+					if (dbStatus == 1) {
+						List<Forecast> listaux = daof.select(listado.get(0).getDate(), listado.get(0).getCity(),
+								listado.get(0).getCountry());
+
+						if (listaux.size() == 0) {
+
+							for (int i = 0; i < listado.size(); i++) {
+								daof.insert(listado.get(i));
+
+							}
+						} else {
+							for (int i = 0; i < listado.size(); i++) {
+								daof.update(listado.get(i));
+							}
+						}
+					}
+
 				} else {
-					for (int i = 0; i < listado.size(); i++) {
-						daof.update(listado.get(i));
-					}
+
+					forecast.setDayDescription(null);
+
+					listado.add(forecast);
+
+				}
+
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+		} else if (dbStatus == 1) {
+
+			for (int i = 1; i < 6; i++) {
+				Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24) * i);
+				String auxTomorrow = (df.format(tomorrow));
+				try {
+					listado.add(daof.select(auxTomorrow, city, country).get(0));
+				} catch (Exception e) {
+
 				}
 			}
-		}
-
-		else if (dbStatus == 1) {
-
-			
-			for(int i = 1;i<6;i++){
-				Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24)*i);
-				String auxTomorrow =(df.format(tomorrow));
-				try{
-				listado.add(daof.select(auxTomorrow, city, country).get(0));
-				}catch(Exception e){
-					
-				}
-				}
 		} else {
 		}
 

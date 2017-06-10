@@ -12,11 +12,28 @@ public class Transformer {
 	@Autowired
 	static Forecast f;
 
+	
+	
+	public static int verifyJSON(String result){
+		int JsonError=0;
+		JSONObject js = new JSONObject(result);
+		String verifyJSON = js.getJSONObject("query").get("count").toString();
+		if(verifyJSON.equals("0")){
+			JsonError = 1;
+		}
+		return JsonError;
+		
+	}
+	
+	
+	
+	
 
 	public static Conditions transformConditions(String result) {
+		
+		
 
 		JSONObject js = new JSONObject(result);
-
 		JSONObject channel = js.getJSONObject("query").getJSONObject("results").getJSONObject("channel");
 		String date = js.getJSONObject("query").getJSONObject("results").getJSONObject("channel").getJSONObject("item")
 				.getJSONArray("forecast").getJSONObject(0).getString("date");
@@ -41,13 +58,26 @@ public class Transformer {
 
 		c = new Conditions(conditionBuilder);
 		return c;
+		
+
+		
+		
+		/*else{
+			Conditions.Builder conditionBuilder = new Conditions.Builder();
+			conditionBuilder.build();
+			c = new Conditions(conditionBuilder);
+		return c;
+		}*/
+		
 
 	}
 
 	public static Forecast transformForecast(String result, int pos) {
 
-		JSONObject js = new JSONObject(result);
 
+		JSONObject js = new JSONObject(result);
+		String verifyJSON = js.getJSONObject("query").get("count").toString();
+		if(verifyJSON.equals("1")){
 		JSONObject forecast = js.getJSONObject("query").getJSONObject("results").getJSONObject("channel")
 				.getJSONObject("item").getJSONArray("forecast").getJSONObject(pos);
 
@@ -69,7 +99,13 @@ public class Transformer {
 		f = new Forecast(forecastBuilder);
 
 		return f;
-
+		}
+		else{
+			Forecast.Builder forecastBuilder = new Forecast.Builder();
+			forecastBuilder.build();
+			f = new Forecast(forecastBuilder);
+			return f;
+		}
 	}
 
 }

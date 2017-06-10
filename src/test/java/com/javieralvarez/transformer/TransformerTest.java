@@ -72,8 +72,6 @@ public class TransformerTest {
 	Assert.assertEquals(dummyConditions.getCountry(), Transformer.transformConditions(json).getCountry());
 			
 	
-	
-		
 	}
 
 	@Test

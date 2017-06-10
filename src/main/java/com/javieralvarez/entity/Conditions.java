@@ -85,17 +85,17 @@ public class Conditions {
 			return this;
 		}
 
-		public Builder humidity(Float humidity) {
+		public Builder humidity(float humidity) {
 			this.humidity = humidity;
 			return this;
 		}
 
-		public Builder pressure(Float pressure) {
+		public Builder pressure(float pressure) {
 			this.pressure = pressure;
 			return this;
 		}
 
-		public Builder visibility(Float visibility) {
+		public Builder visibility(float visibility) {
 			this.visibility = visibility;
 			return this;
 		}
@@ -135,6 +135,9 @@ public class Conditions {
 		this.temp=temp;
 	}
 	
+	public void setDayDescription(String dayDescription){
+		this.dayDescription=dayDescription;
+	}
 	public void setWindspeed(float speed){
 		this.windSpeed=speed;
 	}

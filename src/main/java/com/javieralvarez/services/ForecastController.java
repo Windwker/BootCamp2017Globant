@@ -2,9 +2,9 @@ package com.javieralvarez.services;
 
 import java.util.ArrayList;
 
-import javax.ws.rs.core.Response;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,14 +12,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.javieralvarez.adapters.YahooWeatherStringToJSONAdapter;
-import com.javieralvarez.connection.Conexion;
 import com.javieralvarez.dao.DaoForecastImpl;
 import com.javieralvarez.entity.Forecast;
 
 @RestController
 public class ForecastController {
-	@Autowired
-	Conexion conexion;
+
 	@Autowired
 	DaoForecastImpl daof;
 	@Autowired
@@ -27,23 +25,27 @@ public class ForecastController {
 
 	
 	@RequestMapping(value = "/selectforecast",method = RequestMethod.GET,headers = "Accept=application/json")
-	public Response getForecast(){
-		if(adapter.getForecast("Cordoba", "Argentina").isEmpty()){
-			return Response.status(Response.Status.NOT_FOUND).entity("No Forecast available for Cordoba, Argentina").build();
+	public ResponseEntity<Object> getDefaultForecast(){
+		if(adapter.getForecast("Cordoba", "Argentina").get(0).getDayDescription()==null){
+			
+			return new ResponseEntity<Object>("No Forecast available for Cordoba, Argentina",HttpStatus.NOT_FOUND);
 		}else{
-			return Response.status(Response.Status.OK).entity(adapter.getForecast("Cordoba", "Argentina")).build();
+			return new ResponseEntity<Object>(adapter.getForecast("Cordoba", "Argentina"),HttpStatus.OK);
 	
 		}
 	}
 	
 	
-	@RequestMapping(value = "/selectforecast/{city}/{country}", method = RequestMethod.GET)
-	public Response getForecastCityCountry(@PathVariable("city") String city, @PathVariable("country") String country) {
+	@RequestMapping(value = "/selectforecast/{city}/{country}", method = RequestMethod.GET,headers = "Accept=application/json")
+	public ResponseEntity<Object> getForecastCityCountry(@PathVariable("city") String city, @PathVariable("country") String country) {
 		
-		if(adapter.getForecast(city, country).isEmpty()){
-			return Response.status(Response.Status.NOT_FOUND).entity("No Forecast available for "+city+','+country+"").build();
+		if(adapter.getForecast(city, country).get(0).getDayDescription()==null){
+			
+			return new ResponseEntity<Object>("No Forecast available for "+city+','+country+"",HttpStatus.NOT_FOUND);
+			
 		}else{
-			return Response.status(Response.Status.OK).entity(adapter.getForecast(city, country)).build();
+			return new ResponseEntity<Object>(adapter.getForecast(city, country),HttpStatus.OK);
+
 	
 		}
 		
