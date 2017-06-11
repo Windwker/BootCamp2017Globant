@@ -46,7 +46,7 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather {
 	String auxToday = (df.format(today));
 
 	public Conditions getConditions(String city, String country) {
-		int errorDB = 0;
+
 		int conexion = validateStatus.checkConnection();
 		int dbStatus = validateStatus.checkDBStatus();
 
@@ -60,7 +60,7 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather {
 				try {
 
 					String result = proxy.getYahooWeather(path);
-					System.out.println(Transformer.verifyJSON(result));
+
 					if (Transformer.verifyJSON(result) == 0) {
 						condition = Transformer.transformConditions(result);
 
@@ -93,11 +93,10 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather {
 				}
 
 			} catch (Exception e) {
-				// System.out.println("FRUTA");
-				// System.out.println(e.getMessage());
+
 				System.out.println(e.getMessage());
 			}
-
+			return condition;
 		} else if (dbStatus == 1) {// NO HAY CONEXION CON EL ENDPOINT. VERIFICA
 									// HAYA CONEXION CON DB LOCAL.
 
@@ -105,16 +104,16 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather {
 
 				condition = daoc.select(auxToday, city, country).get(0);
 			} catch (Exception e) {
-				System.out.println("ERROR");
-				System.out.println(e.getMessage());
-				errorDB = 1;
+
+				condition.setDayDescription(null);
 				return condition;
 			}
-
+			return condition;
 		} else {
-
+			condition.setDayDescription(null);
+			return condition;
 		}
-		return condition;
+
 	}
 
 	public List<Forecast> getForecast(String city, String country) {
@@ -169,8 +168,10 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather {
 				}
 
 			} catch (Exception e) {
+
 				System.out.println(e.getMessage());
 			}
+			return listado;
 		} else if (dbStatus == 1) {
 
 			for (int i = 1; i < 6; i++) {
@@ -182,10 +183,20 @@ public class YahooWeatherStringToJSONAdapter implements YahooWeather {
 
 				}
 			}
-		} else {
-		}
+			if (listado.size() > 1) {
+				return listado;
+			} else {
+				forecast.setDayDescription(null);
+				listado.add(forecast);
+				return listado;
+			}
 
-		return listado;
+		} else {
+			forecast.setDayDescription(null);
+
+			listado.add(forecast);
+			return listado;
+		}
 
 	}
 

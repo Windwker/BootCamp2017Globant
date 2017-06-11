@@ -20,7 +20,7 @@ public class DaoForecastImpl implements ForecastAndConditionsDao<Forecast> {
 	private int id = 0;
 	private String city;
 	private String country;
-	private int sql;
+
 	List<Forecast> lista;
 	@Autowired
 	private Conexion conexion;

@@ -41,7 +41,7 @@ public class ConditionsController {
 	@RequestMapping(value = "/selectconditions/{city}/{country}", method = RequestMethod.GET, headers = "Accept=application/json")
 	public ResponseEntity<Object> getConditionsCityCountry(@PathVariable("city") String city,
 			@PathVariable("country") String country) {
-		System.out.println(adapter.getConditions(city, country).getDayDescription());
+		
 		if (adapter.getConditions(city, country).getDayDescription() == null) {
 
 			return new ResponseEntity<Object>("No current conditions available for " + city + ',' + country + "",

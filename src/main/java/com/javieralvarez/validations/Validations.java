@@ -35,14 +35,14 @@ public  int checkConnection(){
 		
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
-		e.printStackTrace();
+		e.getMessage();
 		conexion =0;
 	}
 	return conexion;
 	
 	
 }
-
+// Valida el estado de Base de Datos
 public  int checkDBStatus(){
 	int dbStatus = 1;
 	

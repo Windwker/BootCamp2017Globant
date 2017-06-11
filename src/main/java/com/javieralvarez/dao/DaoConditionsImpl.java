@@ -110,6 +110,8 @@ public class DaoConditionsImpl implements ForecastAndConditionsDao<Conditions> {
 
 			
 		}catch(Exception e){
+	
+
 			System.out.println(e.getMessage());
 		}
 		
